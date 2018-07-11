@@ -1,7 +1,107 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+<head>
+  <script type="text/javascript">
+var strengthTotal = 0;
+var pushupTotal = 0;
+var tireThrowTotal = 0;
+
+var exs = [];
+/*var ex = {
+  name:"",
+  total:0
+};*/
+
+function addEx(){
+  var newEx = new Object();
+  newEx.name = document.getElementById("newEx").value;
+
+  newEx.total=0;
+  exs.push(newEx);
+
+  document.getElementById("newEx").value="";
+
+  updateEx();
+}
+
+function updateEx(){
+
+  var exsHtml ="";
+  for(var i=0;i<exs.length;i++){
+    exsHtml = exsHtml + '<button id="'+exs[i].name+'Button" onclick="action(\''+exs[i].name+'\')">'+exs[i].name+'</button> <label for="'+exs[i].name+'Total">Count</label> <input id="'+exs[i].name+'Total" type="input" readonly="readonly" style="border:none"/> </br>'
+  }
+  var exsContainer = document.getElementById("exsContainer")
+  exsContainer.innerHTML = exsHtml;
+}
+/*
+function newEx(){
+  var newEx = document.getElementById("newEx").value;
+  if(newEx.trim()!=""){
+    exs.push(newEx);
+  }
+
+}*/
+
+function action(exName){
+  for(var i=0;i<exs.length;i++){
+    if(exs[i].name==exName){
+      exs[i].total=exs[i].total+1;
+      document.getElementById(exs[i].name+"Total").value = exs[i].total;
+      strengthTotal = strengthTotal+1/exs[i].total;
+      document.getElementById("strengthTotal").value = strengthTotal;
+
+    }
+  }
+}
+
+function updateStrength(){
+  document.getElementById("strengthTotal").value = strengthTotal;
+}
+
+function pushup(){
+  pushupTotal = pushupTotal+1;
+  strengthTotal = strengthTotal+1/pushupTotal;
+  document.getElementById("pushupTotal").value = pushupTotal;
+  updateStrength()
+}
+function tireThrow(){
+tireThrowTotal = tireThrowTotal+1;
+  strengthTotal = strengthTotal+1/tireThrowTotal;
+  document.getElementById("tireThrowTotal").value = tireThrowTotal;
+  updateStrength()
+}
+/*
+function updateDisplay(){
+  for(var i=0;i<elements.length;i++){
+    document.getElementById(elements[i].id).value=elements[i].total;
+  }
+}*/
+  </script>
+</head>
+<body onload="updateEx()">
+<h1>Be the Best!</h1>
+<button onclick="alert('You\'re the best')">Click Me</button>
+</br>
+</br>
+
+<label for="strengthTotal">Total Strength</label>
+<input id="strengthTotal" type="input" readonly="readonly" style="border:none"/>
+</br>
+
+<button onclick="pushup()">Pushup</button>
+<label for="pushupTotal">Count</label>
+<input id="pushupTotal" type="input" readonly="readonly" style="border:none"/>
+</br>
+
+<button onclick="tireThrow()">Tire Throw</button>
+<label for="tireTTotal">Count</label>
+<input id="tireThrowTotal" type="input" readonly="readonly" style="border:none"/>
+</br>
+
+<div id="exsContainer"></div>
+</br>
+</br>
+<input id="newEx" type="input" placeholder="What is it called?"/>
+&nbsp;<button onclick="addEx()">Add Excercise</button>
 </body>
 </html>
