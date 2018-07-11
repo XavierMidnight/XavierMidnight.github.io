@@ -5,6 +5,8 @@
 var strengthTotal = 0;
 var pushupTotal = 0;
 var tireThrowTotal = 0;
+var researchPointsSpent = 0;
+var researchPoints = 0;
 
 var exs = [];
 /*var ex = {
@@ -12,15 +14,34 @@ var exs = [];
   total:0
 };*/
 
-function addEx(){
+function addEx(initialEx){
+
   var newEx = new Object();
-  newEx.name = document.getElementById("newEx").value;
+  if(initialEx==undefined){
+    newEx.name = document.getElementById("newEx").value;
+    researchPoints=researchPoints-1;
+    researchPointsSpent=researchPoints+1;
+    document.getElementById("researchPoints").value = researchPoints;
+    if(researchPoints<1){
+        document.getElementById("newExButton").disabled = true;
+        document.getElementById("newEx").disabled = true;
+        document.getElementById("newEx").placeholder = "More Research Points Needed";
+    }
+  }else{
+    newEx.name = initialEx;
+  }
 
-  newEx.total=0;
-  exs.push(newEx);
+      newEx.total=0;
+      exs.push(newEx);
 
-  document.getElementById("newEx").value="";
+      document.getElementById("newEx").value="";
 
+      updateEx();
+}
+
+function init(){
+  addEx("Pushups");
+  addEx("Tire_Throw");
   updateEx();
 }
 
@@ -28,7 +49,7 @@ function updateEx(){
 
   var exsHtml ="";
   for(var i=0;i<exs.length;i++){
-    exsHtml = exsHtml + '<button id="'+exs[i].name+'Button" onclick="action(\''+exs[i].name+'\')">'+exs[i].name+'</button> <label for="'+exs[i].name+'Total">Count</label> <input id="'+exs[i].name+'Total" type="input" readonly="readonly" style="border:none"/> </br>'
+    exsHtml = exsHtml + '<button id="'+exs[i].name+'Button" onclick="action(\''+exs[i].name+'\')">'+exs[i].name+'</button> <label for="'+exs[i].name+'Total">Count</label> <input id="'+exs[i].name+'Total" value="'+exs[i].total+'" type="input" readonly="readonly" style="border:none"/> </br>'
   }
   var exsContainer = document.getElementById("exsContainer")
   exsContainer.innerHTML = exsHtml;
@@ -49,7 +70,14 @@ function action(exName){
       document.getElementById(exs[i].name+"Total").value = exs[i].total;
       strengthTotal = strengthTotal+1/exs[i].total;
       document.getElementById("strengthTotal").value = strengthTotal;
+      researchPoints = Math.floor(strengthTotal/10-researchPointsSpent);
+      document.getElementById("researchPoints").value = researchPoints;
+      if(researchPoints>=1){
+          document.getElementById("newExButton").disabled = false;
+          document.getElementById("newEx").disabled = false;
+          document.getElementById("newEx").placeholder = "New Excercise Unlocked!";
 
+      }
     }
   }
 }
@@ -78,30 +106,25 @@ function updateDisplay(){
 }*/
   </script>
 </head>
-<body onload="updateEx()">
+<body onload="init()">
 <h1>Be the Best!</h1>
 <button onclick="alert('You\'re the best')">Click Me</button>
 </br>
 </br>
-
 <label for="strengthTotal">Total Strength</label>
-<input id="strengthTotal" type="input" readonly="readonly" style="border:none"/>
+<input id="strengthTotal" type="input" readonly style="border:none"/>
 </br>
-
-<button onclick="pushup()">Pushup</button>
-<label for="pushupTotal">Count</label>
-<input id="pushupTotal" type="input" readonly="readonly" style="border:none"/>
-</br>
-
-<button onclick="tireThrow()">Tire Throw</button>
-<label for="tireTTotal">Count</label>
-<input id="tireThrowTotal" type="input" readonly="readonly" style="border:none"/>
 </br>
 
 <div id="exsContainer"></div>
 </br>
 </br>
-<input id="newEx" type="input" placeholder="What is it called?"/>
-&nbsp;<button onclick="addEx()">Add Excercise</button>
+
+<label for="researchPoints">Research Points</label>
+<input id="researchPoints" type="input" readonly style="border:none"/>
+</br>
+</br>
+<input id="newEx" type="input" placeholder="More Research Points Needed" disabled="disabled" style="width:200px"/>
+&nbsp;<button id="newExButton" onclick="addEx()" disabled="disabled" >Add Excercise</button>
 </body>
 </html>
