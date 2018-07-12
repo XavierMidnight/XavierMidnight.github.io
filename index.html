@@ -20,7 +20,7 @@ function addEx(initialEx){
   if(initialEx==undefined){
     newEx.name = document.getElementById("newEx").value;
     researchPoints=researchPoints-1;
-    researchPointsSpent=researchPoints+1;
+    researchPointsSpent=researchPointsSpent+1;
     document.getElementById("researchPoints").value = researchPoints;
     if(researchPoints<1){
         document.getElementById("newExButton").disabled = true;
@@ -72,6 +72,7 @@ function action(exName){
       document.getElementById("strengthTotal").value = strengthTotal;
       researchPoints = Math.floor(strengthTotal/10-researchPointsSpent);
       document.getElementById("researchPoints").value = researchPoints;
+      document.getElementById("researchPointsPercent").value = Math.trunc((strengthTotal/10-researchPointsSpent)*100);
       if(researchPoints>=1){
           document.getElementById("newExButton").disabled = false;
           document.getElementById("newEx").disabled = false;
@@ -123,6 +124,8 @@ function updateDisplay(){
 <label for="researchPoints">Research Points</label>
 <input id="researchPoints" type="input" readonly style="border:none"/>
 </br>
+<label for="researchPointsPercent">Research Points Percent</label>
+<progress id="researchPointsPercent" value="0" max="100"></progress>
 </br>
 <input id="newEx" type="input" placeholder="More Research Points Needed" disabled="disabled" style="width:200px"/>
 &nbsp;<button id="newExButton" onclick="addEx()" disabled="disabled" >Add Excercise</button>
