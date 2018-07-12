@@ -1,6 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+  <style type="text/css">
+
+  progress {
+    -webkit-appearance: none;
+  }
+
+  ::-webkit-progress-value {
+    background-color: lightgreen;
+    border-radius:5px;
+  }
+  ::-webkit-progress-bar {
+    background-color: white;
+    border-radius:5px;
+    border:solid 1px;
+  }
+
+  label{
+    color:lightblue;
+  }
+
+  input{
+    color:lightblue;
+    background:transparent;
+    border:none;
+  }
+  </style>
+
   <script type="text/javascript">
 var strengthTotal = 0;
 var pushupTotal = 0;
@@ -53,6 +81,8 @@ function updateEx(){
   }
   var exsContainer = document.getElementById("exsContainer")
   exsContainer.innerHTML = exsHtml;
+  document.getElementById("researchPointsPercent").value = Math.trunc((strengthTotal/5-researchPointsSpent)*100);
+
 }
 /*
 function newEx(){
@@ -70,34 +100,45 @@ function action(exName){
       document.getElementById(exs[i].name+"Total").value = exs[i].total;
       strengthTotal = strengthTotal+1/exs[i].total;
       document.getElementById("strengthTotal").value = strengthTotal;
-      researchPoints = Math.floor(strengthTotal/10-researchPointsSpent);
+      researchPoints = Math.floor(strengthTotal/5-researchPointsSpent);
       document.getElementById("researchPoints").value = researchPoints;
-      document.getElementById("researchPointsPercent").value = Math.trunc((strengthTotal/10-researchPointsSpent)*100);
+      document.getElementById("researchPointsPercent").value = Math.trunc((strengthTotal/5-researchPointsSpent)*100);
+
       if(researchPoints>=1){
           document.getElementById("newExButton").disabled = false;
           document.getElementById("newEx").disabled = false;
           document.getElementById("newEx").placeholder = "New Excercise Unlocked!";
-
       }
     }
   }
 }
 
-function updateStrength(){
-  document.getElementById("strengthTotal").value = strengthTotal;
+
+function go(exName){
+  for(var i=0;i<exs.length;i++){
+    if(exs[i].name==exName){
+
+    }
+  }
 }
 
-function pushup(){
-  pushupTotal = pushupTotal+1;
-  strengthTotal = strengthTotal+1/pushupTotal;
-  document.getElementById("pushupTotal").value = pushupTotal;
-  updateStrength()
+var going;
+
+function startTimer(){
+    goButton=!goButton;
+    if(goButton){
+      going = setInterval(go, 5000);
+      document.getElementById("auto").style.backgroundColor="green";
+    }else{
+      clearInterval(going);
+      document.getElementById("auto").style.backgroundColor="";
+
+    }
 }
-function tireThrow(){
-tireThrowTotal = tireThrowTotal+1;
-  strengthTotal = strengthTotal+1/tireThrowTotal;
-  document.getElementById("tireThrowTotal").value = tireThrowTotal;
-  updateStrength()
+
+var goButton = false;
+function go(){
+  action("Pushups");
 }
 /*
 function updateDisplay(){
@@ -107,8 +148,8 @@ function updateDisplay(){
 }*/
   </script>
 </head>
-<body onload="init()">
-<h1>Be the Best!</h1>
+<body onload="init()" style="background-image:url('horsemuscle.jpg');-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;">
+<h1 style="color:orange;font-size:30px">Be the Best!</h1>
 <button onclick="alert('You\'re the best')">Click Me</button>
 </br>
 </br>
@@ -122,12 +163,15 @@ function updateDisplay(){
 </br>
 
 <label for="researchPoints">Research Points</label>
-<input id="researchPoints" type="input" readonly style="border:none"/>
+<input id="researchPoints" type="input" readonly />
 </br>
 <label for="researchPointsPercent">Research Points Percent</label>
-<progress id="researchPointsPercent" value="0" max="100"></progress>
+<progress id="researchPointsPercent" value="0" max="100" style="height:10px;vertical-align:middle;"></progress>
 </br>
-<input id="newEx" type="input" placeholder="More Research Points Needed" disabled="disabled" style="width:200px"/>
+<input id="newEx" type="input" placeholder="More Research Points Needed" disabled="disabled" style="width:200px;background:white"/>
 &nbsp;<button id="newExButton" onclick="addEx()" disabled="disabled" >Add Excercise</button>
+</br>
+</br>
+<button id="auto" onclick="startTimer()">Auto Pushups</button>
 </body>
 </html>
