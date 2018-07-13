@@ -77,7 +77,7 @@ function updateEx(){
 
   var exsHtml ="";
   for(var i=0;i<exs.length;i++){
-    exsHtml = exsHtml + '<button id="'+exs[i].name+'Button" onclick="action(\''+exs[i].name+'\')">'+exs[i].name+'</button> <label for="'+exs[i].name+'Total">Count</label> <input id="'+exs[i].name+'Total" value="'+exs[i].total+'" type="input" readonly="readonly" style="border:none"/><button id="auto'+exs[i].name+'" onclick="startTimer(\''+exs[i].name+'\')">Auto '+exs[i].name+'</button> </br>'
+    exsHtml = exsHtml + '<button id="auto'+exs[i].name+'" onclick="startTimer(\''+exs[i].name+'\')">⚈</button><button id="'+exs[i].name+'Button" onclick="action(\''+exs[i].name+'\')">'+exs[i].name+'</button> <label for="'+exs[i].name+'Total">Count</label> <input id="'+exs[i].name+'Total" value="'+exs[i].total+'" type="input" readonly="readonly" style="border:none"/> </br>'
   }
   var exsContainer = document.getElementById("exsContainer")
   exsContainer.innerHTML = exsHtml;
@@ -122,9 +122,9 @@ function startTimer(exName){
     goButton=!goButton;
     //if(goButton){
       clearInterval(going);
-      document.getElementById("auto"+goName).style.backgroundColor="";
+      document.getElementById("auto"+goName).style.color="";
       goName=exName;
-      document.getElementById("auto"+goName).style.backgroundColor="green";
+      document.getElementById("auto"+goName).style.color="lightgreen";
 
       going = setInterval(go, 2000);
       //document.getElementById("auto"+exName).style.backgroundColor="green";
@@ -136,7 +136,6 @@ function startTimer(exName){
 }
 
 function go(){
-
   action(goName);
 }
 /*
@@ -152,6 +151,7 @@ function updateDisplay(){
 <button onclick="alert('You\'re the best')">Click Me</button>
 </br>
 </br>
+<div id="clicker" style="background-color:grey;display:inline-block;border:5px solid lightblue;padding:5px">
 <label for="strengthTotal">Total Strength</label>
 <input id="strengthTotal" type="input" readonly style="border:none"/>
 </br>
@@ -171,5 +171,6 @@ function updateDisplay(){
 &nbsp;<button id="newExButton" onclick="addEx()" disabled="disabled" >Add Excercise</button>
 </br>
 </br>
+</div>
 </body>
 </html>
