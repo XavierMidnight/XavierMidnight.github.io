@@ -171,6 +171,11 @@ function updateDisplay(){
 &nbsp;<button id="newExButton" onclick="addEx()" disabled="disabled" >Add Excercise</button>
 </br>
 </br>
+<button onclick="document.getElementById('horseRace').style.display='inline-block';setTimeout(function(){document.getElementById('horseRace').style.display='none'},5000);">Start the Race!</button>
 </div>
+
+<div id="horseRace" style="display:none;width:373px;height:193px;float:right;background-image:url('horserace.gif');-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;">
+</div>
+
 </body>
 </html>
