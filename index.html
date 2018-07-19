@@ -27,6 +27,15 @@
     background:transparent;
     border:none;
   }
+
+  #horseTrack{
+    border-style:dotted;
+    border-width:10px;
+    border-color:green;
+    padding:10px;
+    color:white;
+    font-size:67px;
+  }
   </style>
 
   <script type="text/javascript">
@@ -138,6 +147,48 @@ function startTimer(exName){
 function go(){
   action(goName);
 }
+
+var horseTrackDirection = 0;
+function race(){
+horseTrackDirection = horseTrackDirection +1;
+
+document.getElementById("horseTrack").style.borderTopColor="green";
+document.getElementById("horseTrack").style.borderRightColor="green";
+document.getElementById("horseTrack").style.borderBottomColor="green";
+document.getElementById("horseTrack").style.borderLeftColor="green";
+
+switch(horseTrackDirection%4){
+  case 0:
+    document.getElementById("horseTrack").style.borderTopColor="red";
+    break;
+  case 1:
+    document.getElementById("horseTrack").style.borderRightColor="red";
+  break;
+  case 2:
+    document.getElementById("horseTrack").style.borderBottomColor="red";
+  break;
+  case 3:
+    document.getElementById("horseTrack").style.borderLeftColor="red";
+  break;
+}
+
+
+if(horseTrackDirection>51+winnerNumber){
+  clearInterval(theRace);
+  horseTrackDirection=0;
+  document.getElementById("horseTrack").innerHTML = winnerNumber;
+}
+
+}
+var theRace;
+var winnerNumber = 0;
+function startRace(){
+  setTimeout(function(){document.getElementById('horseRace').style.display='none'},5000);
+  winnerNumber = Math.floor(Math.random()*4);
+  theRace = setInterval(race,100);
+
+
+}
 /*
 function updateDisplay(){
   for(var i=0;i<elements.length;i++){
@@ -171,15 +222,17 @@ function updateDisplay(){
 &nbsp;<button id="newExButton" onclick="addEx()" disabled="disabled" >Add Excercise</button>
 </br>
 </br>
-<<<<<<< HEAD
-<button onclick="document.getElementById('horseRace').style.display='inline-block';setTimeout(function(){document.getElementById('horseRace').style.display='none'},5000);">Start the Race!</button>
-=======
-<button>start race holder</button>
->>>>>>> 65af7e33d8b7f66646e4a144ab4c8f916e8add0d
+<button onclick="document.getElementById('horseRace').style.display='inline-block';startRace();">Start the Race!</button>
 </div>
 
-<div id="horseRace" style="display:none;width:373px;height:193px;float:right;background-image:url('horserace.gif');-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;">
+
+<div id="horseTrack" style="width:373px;height:193px;float:right;margin-right:100px">
+  <div id="horseRace" style="display:none;width:373px;height:193px;background-image:url('horserace.gif');-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;">
+  </div>
+  <!--<input type="text" id="horseTrackWinner" />-->
 </div>
+
+
 
 </body>
 </html>
