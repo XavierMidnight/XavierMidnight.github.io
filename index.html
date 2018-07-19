@@ -176,7 +176,7 @@ switch(horseTrackDirection%4){
 if(horseTrackDirection>51+winnerNumber){
   clearInterval(theRace);
   horseTrackDirection=0;
-  document.getElementById("horseTrack").innerHTML = winnerNumber;
+  document.getElementById("horseRaceWinner").innerHTML = winnerNumber;
 }
 
 }
@@ -186,7 +186,7 @@ function startRace(){
   setTimeout(function(){document.getElementById('horseRace').style.display='none'},5000);
   winnerNumber = Math.floor(Math.random()*4);
   theRace = setInterval(race,100);
-
+  document.getElementById("horseRaceWinner").innerHTML = "";
 
 }
 /*
@@ -229,7 +229,7 @@ function updateDisplay(){
 <div id="horseTrack" style="width:373px;height:193px;float:right;margin-right:100px">
   <div id="horseRace" style="display:none;width:373px;height:193px;background-image:url('horserace.gif');-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;">
   </div>
-  <!--<input type="text" id="horseTrackWinner" />-->
+  <span id="horseRaceWinner"></span>
 </div>
 
 
