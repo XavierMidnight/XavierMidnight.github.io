@@ -46,7 +46,8 @@
                 var message = "!LedColor("+anchor.outerText+","+res+")";
                 console.log(message);
                 chatBox.innerHTML += "<span><span style='color:"+getRandomColor()+";font-weight:bold'>"+ user+"</span>: "+message+ "</span><br>"   // Comment this line when you uncomment the line below
-                // ComfyJS.Say( messagee );   // Uncomment this command to spam the chat with led commands  
+                //ComfyJS.Say( message );   // Uncomment this command to spam the chat with led commands  
+                sleep(1000);
               }
             }
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -112,6 +113,15 @@ const getRandomColor = () => {
     Math.floor(Math.random() * 255),
     Math.floor(Math.random() * 255));
 }
+
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
 
     </script>
 
