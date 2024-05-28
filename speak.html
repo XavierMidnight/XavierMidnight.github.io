@@ -3,43 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Multi-Voice Conversation</title>
-    <style>
-        #loading {
-            display: none;
-            margin-top: 10px;
-        }
-        #loading.show {
-            display: block;
-        }
-        #loadingBarContainer {
-            width: 100%;
-            background-color: #f3f3f3;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        #loadingBar {
-            width: 0;
-            height: 30px;
-            background-color: #4caf50;
-            text-align: center;
-            line-height: 30px;
-            color: white;
-            border-radius: 5px;
-        }
-    </style>
 </head>
 <body>
     <h1>Multi-Voice Conversation</h1>
     <label for="voiceSelect1">Choose voice for Speaker 1:</label>
-    <select id="voiceSelect1"><option>Loading voices...</option></select>
+    <select id="voiceSelect1"></select>
     <label for="voiceSelect2">Choose voice for Speaker 2:</label>
-    <select id="voiceSelect2"><option>Loading voices...</option></select>
+    <select id="voiceSelect2"></select>
     <button onclick="startConversation()">Start Conversation</button>
-    <div id="loading" class="show">Loading voices, please wait...</div>
-    <div id="loadingBarContainer">
-        <div id="loadingBar">0%</div>
-    </div>
 
     <script>
         let availableVoices = [];
@@ -97,12 +68,9 @@
             availableVoices = window.speechSynthesis.getVoices();
             const voiceSelect1 = document.getElementById('voiceSelect1');
             const voiceSelect2 = document.getElementById('voiceSelect2');
-            const loading = document.getElementById('loading');
-            const loadingBar = document.getElementById('loadingBar');
-
             voiceSelect1.innerHTML = '';
             voiceSelect2.innerHTML = '';
-            availableVoices.forEach((voice, index) => {
+            availableVoices.forEach((voice) => {
                 const option1 = document.createElement('option');
                 option1.value = voice.name;
                 option1.textContent = `${voice.name} (${voice.lang})`;
@@ -112,19 +80,10 @@
                 option2.value = voice.name;
                 option2.textContent = `${voice.name} (${voice.lang})`;
                 voiceSelect2.appendChild(option2);
-
-                // Update the loading bar
-                const progress = Math.round(((index + 1) / availableVoices.length) * 100);
-                loadingBar.style.width = progress + '%';
-                loadingBar.textContent = progress + '%';
             });
-
-            loading.classList.remove('show');
         }
 
         window.addEventListener('load', () => {
-            const loading = document.getElementById('loading');
-            loading.classList.add('show');
             window.speechSynthesis.onvoiceschanged = populateVoiceList;
         });
     </script>
