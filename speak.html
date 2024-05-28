@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Voice Conversation</title>
+    <style>
+        #loading {
+            display: none;
+            margin-top: 10px;
+        }
+        #loading.show {
+            display: block;
+        }
+        #loadingBarContainer {
+            width: 100%;
+            background-color: #f3f3f3;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #loadingBar {
+            width: 0;
+            height: 30px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multi-Voice Conversation</h1>
+    <label for="voiceSelect1">Choose voice for Speaker 1:</label>
+    <select id="voiceSelect1"><option>Loading voices...</option></select>
+    <label for="voiceSelect2">Choose voice for Speaker 2:</label>
+    <select id="voiceSelect2"><option>Loading voices...</option></select>
+    <button onclick="startConversation()">Start Conversation</button>
+    <div id="loading" class="show">Loading voices, please wait...</div>
+    <div id="loadingBarContainer">
+        <div id="loadingBar">0%</div>
+    </div>
+
+    <script>
+        let availableVoices = [];
+
+        function startConversation() {
+            if (availableVoices.length === 0) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+
+            const voiceSelect1 = document.getElementById('voiceSelect1');
+            const selectedVoiceName1 = voiceSelect1.value;
+            const voiceSelect2 = document.getElementById('voiceSelect2');
+            const selectedVoiceName2 = voiceSelect2.value;
+
+            const conversationText = [
+                { text: "Hello, how are you today?", voice: selectedVoiceName1, options: { pitch: 1, rate: 1 } },
+                { text: "I'm great, thank you! How about you?", voice: selectedVoiceName2, options: { pitch: 1, rate: 1.2, pause: 500 } },
+                { text: "I'm doing well. What have you been up to?", voice: selectedVoiceName1, options: { pitch: 0.9, rate: 0.8 } },
+                { text: "Just working on some projects. Anything new with you?", voice: selectedVoiceName2, options: { pitch: 1.1, rate: 1, pause: 1000 } }
+            ];
+
+            let currentIndex = 0;
+
+            function speakNext() {
+                if (currentIndex < conversationText.length) {
+                    const { text, voice, options } = conversationText[currentIndex];
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    const selectedVoice = availableVoices.find(v => v.name === voice);
+                    if (selectedVoice) {
+                        utterance.voice = selectedVoice;
+                    } else {
+                        console.warn(`Voice '${voice}' not found. Using default voice.`);
+                    }
+
+                    utterance.pitch = options.pitch;
+                    utterance.rate = options.rate;
+
+                    utterance.onend = () => {
+                        currentIndex++;
+                        if (options.pause) {
+                            setTimeout(speakNext, options.pause);
+                        } else {
+                            speakNext();
+                        }
+                    };
+
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+
+            speakNext();
+        }
+
+        function populateVoiceList() {
+            availableVoices = window.speechSynthesis.getVoices();
+            const voiceSelect1 = document.getElementById('voiceSelect1');
+            const voiceSelect2 = document.getElementById('voiceSelect2');
+            const loading = document.getElementById('loading');
+            const loadingBar = document.getElementById('loadingBar');
+
+            voiceSelect1.innerHTML = '';
+            voiceSelect2.innerHTML = '';
+            availableVoices.forEach((voice, index) => {
+                const option1 = document.createElement('option');
+                option1.value = voice.name;
+                option1.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect1.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = voice.name;
+                option2.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect2.appendChild(option2);
+
+                // Update the loading bar
+                const progress = Math.round(((index + 1) / availableVoices.length) * 100);
+                loadingBar.style.width = progress + '%';
+                loadingBar.textContent = progress + '%';
+            });
+
+            loading.classList.remove('show');
+        }
+
+        window.addEventListener('load', () => {
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+            window.speechSynthesis.onvoiceschanged = populateVoiceList;
+        });
+    </script>
+</body>
+</html>
