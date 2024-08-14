@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Incoming Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Incoming Request Data</h1>
+    <div id="request-data">
+        <p>Loading...</p>
+    </div>
+
+    <script>
+        // Function to display request data
+        function displayRequestData(method, url, headers, body) {
+            const requestDataDiv = document.getElementById('request-data');
+            requestDataDiv.innerHTML = `
+                <h2>Method: ${method}</h2>
+                <h3>URL: ${url}</h3>
+                <h3>Headers:</h3>
+                <pre>${JSON.stringify(headers, null, 2)}</pre>
+                <h3>Body:</h3>
+                <pre>${body ? JSON.stringify(body, null, 2) : 'No body content'}</pre>
+            `;
+        }
+
+        // Capture and display incoming request
+        window.addEventListener('load', function() {
+            const method = new URLSearchParams(window.location.search).get('_method') || 'GET';
+            const url = window.location.href;
+            const headers = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+            let body = null;
+
+            if (method === 'POST') {
+                fetch(url, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        body = data;
+                        displayRequestData(method, url, headers, body);
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                displayRequestData(method, url, headers, body);
+            }
+        });
+    </script>
+</body>
+</html>
