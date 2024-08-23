@@ -5,7 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - Smell like Rose's LLC</title>
     <style>
-        /* ... (copy the styles from index.html) ... */
+        :root {
+            --primary-color: #e11d48;
+            --secondary-color: #9f1239;
+            --background-color: #fff1f2;
+            --text-color: #333333;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        h1, h2 {
+            color: var(--secondary-color);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .gallery-intro {
+            text-align: center;
+            padding: 2rem 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
         
         .gallery {
             display: grid;
@@ -52,6 +130,20 @@
         .gallery-item:hover .caption {
             transform: translateY(0);
         }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: #ffffff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
     </style>
 </head>
 <body>
@@ -74,41 +166,43 @@
     </header>
 
     <main class="container">
-        <h1>Our Gallery</h1>
-        <p>Take a look at some of our happy clients and our work!</p>
+        <section class="gallery-intro">
+            <h1>Our Gallery</h1>
+            <p>Take a look at some of our happy clients and our work!</p>
+        </section>
         
         <div class="gallery">
             <div class="gallery-item">
-                <img src="/public/dog1.jpg?height=400&width=400" alt="Happy Dog 1">
-                <div class="caption">Fluffy after grooming</div>
+                <img src="/public/dog1.jpg" alt="Two dogs on a red couch">
+                <div class="caption">Cozy companions on our red couch</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog2.jpg?height=400&width=400" alt="Happy Cat 1">
-                <div class="caption">Whiskers enjoying a spa day</div>
+                <img src="/public/dog2.jpg" alt="Two dogs sitting together">
+                <div class="caption">Best friends enjoying their grooming session</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog3.jpg?height=400&width=400" alt="Grooming Process">
-                <div class="caption">Our expert grooming process</div>
+                <img src="/public/dog3.jpg" alt="Dog on a red and white blanket">
+                <div class="caption">Relaxing after a spa day</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog4.jpg?height=400&width=400" alt="Happy Dog 2">
-                <div class="caption">Buddy's new look</div>
+                <img src="/public/dog4.jpg" alt="Dog with festive decorations">
+                <div class="caption">Celebrating the holidays in style</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog5.jpg?height=400&width=400"" alt="Spa Treatment">
-                <div class="caption">Luxury spa treatment in action</div>
+                <img src="/public/dog5.jpg" alt="Dog resting on a couch">
+                <div class="caption">Comfortable and clean after grooming</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog1.jpg?height=400&width=400" alt="Happy Cat 2">
-                <div class="caption">Luna's pampering session</div>
+                <img src="/public/spa.jpg" alt="Two dogs on a red couch">
+                <div class="caption">Double the cuteness, double the fun</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog2.jpg?height=400&width=400" alt="Our Team">
-                <div class="caption">Meet our caring team</div>
+                <img src="h/public/spa2.jpg" alt="Two dogs sitting together">
+                <div class="caption">Freshly groomed and ready to play</div>
             </div>
             <div class="gallery-item">
-                <img src="/public/dog3.jpg?height=400&width=400" alt="Our Facility">
-                <div class="caption">Our clean and modern facility</div>
+                <img src="/public/nailcare.jpg" alt="Dog on a red and white blanket">
+                <div class="caption">Cozy and clean on our signature blanket</div>
             </div>
         </div>
     </main>
