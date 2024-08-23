@@ -7,28 +7,36 @@
     <style>
         /* ... (copy the styles from index.html) ... */
         
-        /* Additional styles for the gallery */
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
+            gap: 1.5rem;
             padding: 2rem 0;
         }
+        
         .gallery-item {
             position: relative;
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+        
         .gallery-item img {
             width: 100%;
             height: 250px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
+        
         .gallery-item:hover img {
             transform: scale(1.05);
         }
+        
         .gallery-item .caption {
             position: absolute;
             bottom: 0;
@@ -40,6 +48,7 @@
             transform: translateY(100%);
             transition: transform 0.3s ease;
         }
+        
         .gallery-item:hover .caption {
             transform: translateY(0);
         }
@@ -48,16 +57,19 @@
 <body>
     <header>
         <div class="container">
-            <nav>
-                <ul>
-                    <li><a href="index.html#home">Home</a></li>
-                    <li><a href="index.html#services">Services</a></li>
-                    <li><a href="index.html#why-us">Why Us</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
-                    <li><a href="index.html#book">Book Now</a></li>
-                    <li><a href="gallery.html">Gallery</a></li>
-                </ul>
-            </nav>
+            <div class="header-content">
+                <div class="logo">Smell like Rose's LLC</div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#why-us">Why Us</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                        <li><a href="index.html#book">Book Now</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </header>
 
@@ -67,35 +79,35 @@
         
         <div class="gallery">
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Happy+Dog+1" alt="Happy Dog 1">
+                <img src="/placeholder.svg?height=400&width=400" alt="Happy Dog 1">
                 <div class="caption">Fluffy after grooming</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Happy+Cat+1" alt="Happy Cat 1">
+                <img src="/placeholder.svg?height=400&width=400" alt="Happy Cat 1">
                 <div class="caption">Whiskers enjoying a spa day</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Grooming+Process" alt="Grooming Process">
+                <img src="/placeholder.svg?height=400&width=400" alt="Grooming Process">
                 <div class="caption">Our expert grooming process</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Happy+Dog+2" alt="Happy Dog 2">
+                <img src="/placeholder.svg?height=400&width=400" alt="Happy Dog 2">
                 <div class="caption">Buddy's new look</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Spa+Treatment" alt="Spa Treatment">
+                <img src="/placeholder.svg?height=400&width=400" alt="Spa Treatment">
                 <div class="caption">Luxury spa treatment in action</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Happy+Cat+2" alt="Happy Cat 2">
+                <img src="/placeholder.svg?height=400&width=400" alt="Happy Cat 2">
                 <div class="caption">Luna's pampering session</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Our+Team" alt="Our Team">
+                <img src="/placeholder.svg?height=400&width=400" alt="Our Team">
                 <div class="caption">Meet our caring team</div>
             </div>
             <div class="gallery-item">
-                <img src="https://via.placeholder.com/400x400.png?text=Facility" alt="Our Facility">
+                <img src="/placeholder.svg?height=400&width=400" alt="Our Facility">
                 <div class="caption">Our clean and modern facility</div>
             </div>
         </div>
@@ -104,6 +116,7 @@
     <footer>
         <div class="container">
             <p>&copy; 2023 Smell like Rose's LLC. All rights reserved.</p>
+            <p>8028 Dorchester Rd, North Charleston, SC 29418</p>
         </div>
     </footer>
 </body>
