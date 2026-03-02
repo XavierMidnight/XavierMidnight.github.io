@@ -2,7 +2,7 @@ import { getByPath, setByPath } from './utils.js';
 
 /**
  * Controls the inline-editing experience: toolbar, contenteditable
- * management, and DOM → content synchronisation.
+ * management, DOM → content synchronisation, and drag positioning.
  */
 export class EditMode {
   #active = false;
@@ -12,11 +12,13 @@ export class EditMode {
   #cm;        // ContentManager
   #renderer;
   #indicator; // SaveIndicator
+  #drag;      // DragPosition
 
-  constructor(contentManager, renderer, saveIndicator) {
+  constructor(contentManager, renderer, saveIndicator, dragPosition) {
     this.#cm = contentManager;
     this.#renderer = renderer;
     this.#indicator = saveIndicator;
+    this.#drag = dragPosition;
   }
 
   get active() { return this.#active; }
@@ -41,6 +43,7 @@ export class EditMode {
     document.body.classList.add('edit-mode');
     this.#toolbar.style.display = 'flex';
     this.applyEditable();
+    this.#drag?.activate();
   }
 
   deactivate() {
@@ -49,11 +52,15 @@ export class EditMode {
     document.body.classList.remove('edit-mode');
     this.#toolbar.style.display = 'none';
     this.#removeEditable();
+    this.#drag?.deactivate();
   }
 
-  /** Re-apply contenteditable after a section re-render. */
+  /** Re-apply contenteditable and drag handles after a section re-render. */
   reapply() {
-    if (this.#active) this.applyEditable();
+    if (this.#active) {
+      this.applyEditable();
+      this.#drag?.reapply();
+    }
   }
 
   // ── make elements editable ────────────────────────────
@@ -132,7 +139,7 @@ export class EditMode {
       if (stat) stat[el.dataset.field] = el.textContent;
     });
 
-    // skills (text-only, ignoring the × delete span)
+    // skills (text-only, ignoring the × delete span and drag handle)
     document.querySelectorAll('[data-skill-index]').forEach((el) => {
       const idx = parseInt(el.dataset.skillIndex);
       const text = Array.from(el.childNodes)
@@ -160,7 +167,10 @@ export class EditMode {
     if (!confirm('Reset all content to defaults? This cannot be undone.')) return;
     const content = this.#cm.resetToDefaults();
     this.#renderer.renderAll(content);
-    if (this.#active) this.applyEditable();
+    if (this.#active) {
+      this.applyEditable();
+      this.#drag?.reapply();
+    }
     this.#indicator.show('saved');
   }
 
@@ -170,7 +180,10 @@ export class EditMode {
     try {
       const content = await this.#cm.importJSON(file);
       this.#renderer.renderAll(content);
-      if (this.#active) this.applyEditable();
+      if (this.#active) {
+        this.applyEditable();
+        this.#drag?.reapply();
+      }
       this.#indicator.show('saved');
     } catch (err) {
       this.#indicator.show('error', String(err));
@@ -189,6 +202,7 @@ export class EditMode {
       </div>
       <button class="toolbar-btn" data-action="export-json">Export JSON</button>
       <button class="toolbar-btn" data-action="import-json">Import JSON</button>
+      <button class="toolbar-btn layout-reset" data-action="reset-layout">Reset Layout</button>
       <button class="toolbar-btn danger" data-action="reset-content">Reset</button>
       <button class="toolbar-btn exit" data-action="toggle-edit">Exit</button>`;
     document.body.prepend(this.#toolbar);
