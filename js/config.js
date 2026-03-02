@@ -6,6 +6,8 @@
 export const DEFAULT_CONTENT = {
   meta: { siteTitle: 'Jeffrey James Wood \u2014 Developer' },
 
+  layout: {},
+
   nav: {
     logo: 'JJW',
     links: [

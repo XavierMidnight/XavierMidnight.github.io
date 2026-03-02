@@ -10,11 +10,13 @@ export class Editors {
   #cm;       // ContentManager
   #renderer;
   #editMode;
+  #drag;     // DragPosition
 
-  constructor(contentManager, renderer, editMode) {
+  constructor(contentManager, renderer, editMode, dragPosition) {
     this.#cm = contentManager;
     this.#renderer = renderer;
     this.#editMode = editMode;
+    this.#drag = dragPosition;
   }
 
   // ── helpers ───────────────────────────────────────────
@@ -37,6 +39,7 @@ export class Editors {
   }
 
   removeSkill(index) {
+    this.#drag?.cleanupArrayPositions('about.skill', index);
     this.#cm.getContent().about.skills.splice(index, 1);
     this.#refreshAbout();
   }
@@ -53,6 +56,7 @@ export class Editors {
   }
 
   removeStat(id) {
+    this.#drag?.removePosition(`about.stat.${id}`);
     const about = this.#cm.getContent().about;
     about.stats = about.stats.filter((s) => s.id !== id);
     this.#refreshAbout();
@@ -68,6 +72,7 @@ export class Editors {
   removeParagraph(index) {
     const paras = this.#cm.getContent().about.paragraphs;
     if (paras.length <= 1) return; // keep at least one
+    this.#drag?.cleanupArrayPositions('about.paragraph', index);
     paras.splice(index, 1);
     this.#refreshAbout();
   }

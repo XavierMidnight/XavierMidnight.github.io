@@ -378,3 +378,171 @@ body.edit-mode .edit-only { display: inline-flex !important; }
 }
 .edit-gear:hover { opacity: 0.6; background: rgba(0,0,0,0.05); }
 body.edit-mode .edit-gear { display: none !important; }
+
+/* ═══════════════════════════════════════════
+   DRAG POSITIONING (edit mode)
+   ═══════════════════════════════════════════ */
+
+/* Apply drag offset via the independent translate property.
+   Composes with existing transform (animations, hover, etc.) */
+[data-pos-key] { translate: var(--drag-x, 0) var(--drag-y, 0); }
+
+/* Ensure draggable elements have relative positioning for handle placement */
+body.edit-mode [data-pos-key] { position: relative; }
+
+/* Drag handle — hidden by default, appears on hover */
+.drag-handle {
+  position: absolute;
+  top: -4px;
+  left: -26px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.15s, box-shadow 0.15s;
+  z-index: 10;
+  pointer-events: auto;
+  box-shadow: var(--shadow-sm);
+  line-height: 1;
+  padding: 0;
+}
+body.edit-mode [data-pos-key]:hover > .drag-handle,
+body.edit-mode .drag-handle:hover { opacity: 1; }
+.drag-handle:hover { color: var(--blue); border-color: var(--blue); box-shadow: var(--shadow-md); }
+.drag-handle:active { cursor: grabbing; }
+
+/* While dragging */
+body.dragging { cursor: grabbing !important; user-select: none; }
+body.dragging * { cursor: grabbing !important; }
+[data-pos-key].is-dragging { opacity: 0.85; z-index: 1000; }
+body.edit-mode [data-pos-key].is-dragging { outline: 2px solid var(--blue) !important; outline-offset: 6px; }
+
+/* Hero shapes: re-enable pointer events for dragging */
+body.edit-mode .hero-shape[data-pos-key] { pointer-events: auto; }
+
+/* Contact section: handle colors on dark background */
+body.edit-mode #contact .drag-handle {
+  background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.5);
+}
+body.edit-mode #contact .drag-handle:hover { color: var(--yellow); border-color: var(--yellow); }
+
+/* Skill chip handle: smaller, centered */
+body.edit-mode .skill-chip > .drag-handle {
+  top: 50%; left: -20px; transform: translateY(-50%);
+  width: 16px; height: 16px; font-size: 0.65rem;
+}
+
+/* Nav handles */
+body.edit-mode .nav [data-pos-key] > .drag-handle {
+  top: 50%; left: -22px; transform: translateY(-50%);
+}
+
+/* Reset Layout toolbar button */
+.toolbar-btn.layout-reset { color: var(--warning); }
+.toolbar-btn.layout-reset:hover { background: rgba(208,156,44,0.15); }
+
+/* ═══════════════════════════════════════════
+   DARK MODE
+   ═══════════════════════════════════════════ */
+body.dark {
+  --bg: #0f1219;
+  --bg-alt: #161b26;
+  --bg-card: #1c2233;
+  --blue-light: rgba(0,88,163,0.12);
+  --blue-soft: rgba(0,88,163,0.1);
+  --text: #e4e8f0;
+  --text-2: #9ca3b8;
+  --text-3: #5a6178;
+  --border: #2a3142;
+  --border-light: #232a3a;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 28px rgba(0,0,0,0.5);
+  --shadow-offset: 6px 6px 0 rgba(0,88,163,0.08);
+  --shadow-offset-lg: 10px 10px 0 rgba(0,88,163,0.1);
+}
+body.dark::before {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+}
+body.dark .nav.scrolled {
+  background: rgba(15,18,25,0.92);
+  box-shadow: 0 1px 0 var(--border);
+}
+body.dark .hero-shape-circle {
+  background: rgba(0,88,163,0.08);
+  box-shadow: 20px 20px 0 rgba(0,88,163,0.04);
+}
+body.dark .hero-shape-rect {
+  background: rgba(255,218,26,0.06);
+  box-shadow: 8px 8px 0 rgba(255,218,26,0.1);
+}
+body.dark .hero-shape-dot { opacity: 0.3; }
+body.dark .hero-tag {
+  background: rgba(0,88,163,0.12);
+  border-color: rgba(0,88,163,0.2);
+}
+body.dark .skill-chip { box-shadow: 2px 2px 0 rgba(0,88,163,0.1); }
+body.dark .skill-chip:hover { box-shadow: 3px 3px 0 rgba(0,88,163,0.15); }
+body.dark #contact { background: #00416f; }
+body.dark .edit-gear {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+@media (max-width: 768px) {
+  body.dark .nav-links { background: rgba(15,18,25,0.97); }
+}
+
+/* dark mode toggle */
+.dark-toggle {
+  position: fixed; bottom: 1.5rem; right: 4rem;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 50%; font-size: 1.05rem; color: var(--text-3);
+  opacity: 0.5; transition: opacity 0.3s, background 0.3s, color 0.3s;
+  z-index: 100; cursor: pointer;
+}
+.dark-toggle:hover { opacity: 0.9; background: rgba(0,0,0,0.06); }
+body.dark .dark-toggle {
+  background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);
+  color: var(--yellow);
+}
+
+/* ═══════════════════════════════════════════
+   PARTICLE CANVAS
+   ═══════════════════════════════════════════ */
+#hero-particles {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ═══════════════════════════════════════════
+   PARALLAX — hero shape composition
+   ═══════════════════════════════════════════ */
+.hero-shape[data-pos-key] {
+  translate: calc(var(--drag-x, 0px) + var(--parallax-x, 0px)) calc(var(--drag-y, 0px) + var(--parallax-y, 0px));
+}
+
+/* ═══════════════════════════════════════════
+   TYPING CURSOR
+   ═══════════════════════════════════════════ */
+.hero-subtitle.typing::after {
+  content: '\2502';
+  color: var(--blue);
+  font-weight: 300;
+  animation: blink-cursor 0.7s step-end infinite;
+  margin-left: 1px;
+}
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
