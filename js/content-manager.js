@@ -24,6 +24,10 @@ export class ContentManager {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         this.#content = JSON.parse(raw);
+        const h = this.#content.hero;
+        if (h && !h.ctaPortfolio) {
+          h.ctaPortfolio = structuredClone(DEFAULT_CONTENT.hero.ctaPortfolio);
+        }
         return this.#content;
       }
     } catch { /* corrupt data — fall through to defaults */ }
@@ -73,6 +77,10 @@ export class ContentManager {
             return reject('Missing required sections');
           }
           this.#content = data;
+          const h = this.#content.hero;
+          if (h && !h.ctaPortfolio) {
+            h.ctaPortfolio = structuredClone(DEFAULT_CONTENT.hero.ctaPortfolio);
+          }
           localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
           resolve(data);
         } catch {

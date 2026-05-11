@@ -24,6 +24,7 @@ export const DEFAULT_CONTENT = {
     subtitle:
       'Building interactive experiences, browser-based tools, and hardware integrations from scratch.',
     ctaPrimary: { text: 'About Me', href: '#about' },
+    ctaPortfolio: { text: 'Portfolio', href: 'portfolio.html' },
     ctaSecondary: { text: 'Get in Touch', href: '#contact' },
   },
 
