@@ -28,6 +28,7 @@ export class ContentManager {
         if (h && !h.ctaPortfolio) {
           h.ctaPortfolio = structuredClone(DEFAULT_CONTENT.hero.ctaPortfolio);
         }
+        this.#ensureNavPortfolioLink();
         return this.#content;
       }
     } catch { /* corrupt data — fall through to defaults */ }
@@ -81,6 +82,7 @@ export class ContentManager {
           if (h && !h.ctaPortfolio) {
             h.ctaPortfolio = structuredClone(DEFAULT_CONTENT.hero.ctaPortfolio);
           }
+          this.#ensureNavPortfolioLink();
           localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
           resolve(data);
         } catch {
@@ -90,6 +92,19 @@ export class ContentManager {
       reader.onerror = () => reject('Could not read file');
       reader.readAsText(file);
     });
+  }
+
+  /** Insert Portfolio after About when missing (older saved / imported JSON). */
+  #ensureNavPortfolioLink() {
+    const links = this.#content?.nav?.links;
+    if (!Array.isArray(links)) return;
+    const hasPortfolio = links.some(
+      (l) => l && typeof l.href === 'string' && l.href.split('?')[0].endsWith('portfolio.html'),
+    );
+    if (hasPortfolio) return;
+    const aboutIdx = links.findIndex((l) => l && l.href === '#about');
+    const insertAt = aboutIdx >= 0 ? aboutIdx + 1 : 0;
+    links.splice(insertAt, 0, { text: 'Portfolio', href: 'portfolio.html' });
   }
 
   /** Wipe localStorage and return a fresh copy of defaults. */

@@ -12,6 +12,7 @@ export const DEFAULT_CONTENT = {
     logo: 'JJW',
     links: [
       { text: 'About', href: '#about' },
+      { text: 'Portfolio', href: 'portfolio.html' },
       { text: 'Contact', href: '#contact' },
       { text: 'GitHub', href: 'https://github.com/XavierMidnight', external: true },
     ],
