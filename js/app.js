@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
   effects.typeSubtitle();
 
   editMode.init();
-  editMode.activate();
 });
 
 // ── event delegation ────────────────────────────────────
