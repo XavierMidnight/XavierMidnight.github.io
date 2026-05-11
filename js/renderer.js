@@ -72,6 +72,26 @@ export class Renderer {
   }
 
   renderHero(hero) {
+    const pf = hero.ctaPortfolio || { text: 'Portfolio', href: 'portfolio.html' };
+    const tplEl = document.getElementById('tpl-index-portfolio-cta');
+    let portfolioCtaHtml = '';
+    if (tplEl?.innerHTML?.trim()) {
+      const doc = new DOMParser().parseFromString(tplEl.innerHTML.trim(), 'text/html');
+      const a = doc.body.querySelector('a');
+      if (a) {
+        a.setAttribute('href', pf.href || 'portfolio.html');
+        const label = a.querySelector('[data-path="hero.ctaPortfolio.text"]') || a;
+        label.textContent = pf.text || 'Portfolio';
+        if (!label.hasAttribute('data-path')) label.setAttribute('data-path', 'hero.ctaPortfolio.text');
+        portfolioCtaHtml = a.outerHTML;
+      }
+    }
+    if (!portfolioCtaHtml) {
+      portfolioCtaHtml = `<a href="${esc(pf.href)}" class="btn btn-outline">
+            <span data-path="hero.ctaPortfolio.text">${esc(pf.text)}</span>
+          </a>`;
+    }
+
     document.getElementById('hero').innerHTML = `
       <canvas id="hero-particles"></canvas>
       <div class="hero-shapes">
@@ -93,9 +113,7 @@ export class Renderer {
           <a href="${esc(hero.ctaPrimary.href)}" class="btn btn-primary">
             <span data-path="hero.ctaPrimary.text">${esc(hero.ctaPrimary.text)}</span>
           </a>
-          <a href="${esc((hero.ctaPortfolio || { href: 'portfolio.html' }).href)}" class="btn btn-outline">
-            <span data-path="hero.ctaPortfolio.text">${esc((hero.ctaPortfolio || { text: 'Portfolio' }).text)}</span>
-          </a>
+          ${portfolioCtaHtml}
           <a href="${esc(hero.ctaSecondary.href)}" class="btn btn-outline">
             <span data-path="hero.ctaSecondary.text">${esc(hero.ctaSecondary.text)}</span>
           </a>
