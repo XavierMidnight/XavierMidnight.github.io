@@ -580,21 +580,24 @@
           {
             src: "public/portfolio/art/IMG_5913.jpg",
             title: "Digital",
-            caption: ".",
-            tags: ["LLM", "Python", "WebSocket"],
-            featured: true
+            caption: "Ipads and Touchscreens.",
+            tags: ["Photoshop"],
+            featured: true,
+            link: "https://photos.app.goo.gl/YxDRLCccWx2Vc3ci7",
           },
           {
             src: "public/portfolio/art/20160313_041146.jpg",
             title: "Physical",
-            caption: ".",
-            tags: ["LTX", "ComfyUI", "Prompt Engineering"]
+            caption: "Sometimes you have to get your hands dirty.",
+            tags: ["LTX", "ComfyUI", "Prompt Engineering"],
+            link: "https://photos.app.goo.gl/DWXdgCpQzEVSvLMv8",
           },
           {
             src: "public/portfolio/art/ai/IMG_5818.PNG",
             title: "Generative",
             caption: "Local image generation with Stable Diffusion.",
-            tags: ["Stable Diffusion", "Local Image Generation"]
+            tags: ["Stable Diffusion", "Local Image Generation"],
+            link: "https://photos.app.goo.gl/jVb8BkCg8s8dGkDs8",
           }
         ]
       },
@@ -611,19 +614,22 @@
             title: "Lasers",
             caption: "Manipulating lasers",
             tags: ["Photos"],
+            link: "https://photos.app.goo.gl/wbaoEqYUecGf2S2z8",
             featured: true
           },
           {
             src: "public/portfolio/lights/Screenshot 2026-05-11 at 5.20.36 PM.png",
             title: "Leds",
             caption: "Individual LEDs and strips.",
-            tags: ["Photos"]
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/4U1b93Q8zG6DS3AP9",
           },
           {
             src: "public/portfolio/lights/matrix/Screenshot 2026-05-11 at 5.22.24 PM.png",
             title: "Matrix",
             caption: "Images and animations on a matrix.",
-            tags: ["Photos"]
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/q95eYH4DjsrNKkVo6",
           }
         ]
       },
@@ -639,7 +645,8 @@
             src: "public/portfolio/microcontrollers/IMG_2195.JPG",
             title: "Microcontrollers",
             caption: "Various microcontrollers and their applications.",
-            tags: ["Photos"]
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/uKyhTnUfUm4FAgXV8",
           }
         ]
       },
@@ -655,7 +662,8 @@
             src: "public/portfolio/projections/lookingglass/Screenshot 2026-05-11 at 5.26.35 PM.png",
             title: "Looking Glass",
             caption: "A full 45 image paralax projection display.",
-            tags: ["Looking Glass", "Paralax Projection"]
+            tags: ["Looking Glass", "Paralax Projection"],
+            link: "https://photos.app.goo.gl/aidA66otcmVfQZ2u5",
           }
         ]
       },
@@ -671,7 +679,8 @@
             src: "public/portfolio/robots/Screenshot 2026-05-11 at 5.28.58 PM.png",
             title: "Robots",
             caption: "Various robots and their applications.",
-            tags: ["Photos"]
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/gCAPN3EuUHv9fRYX6",
           }
         ]
       },
@@ -687,7 +696,8 @@
             src: "public/portfolio/misc/IMG_6198.JPG",
             title: "Misc",
             caption: "Various misc and their applications.",
-            tags: ["Photos"]
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/JpsPJRpqR5qjNt149",
           }
         ]
       }
@@ -710,6 +720,7 @@
 
         const tagsHTML = ph.tags.map(t => `<span class="photo-tag">${t}</span>`).join('');
         const featured = ph.featured ? ' featured' : '';
+        const linkAttr = ph.link ? ` data-link="${ph.link}"` : '';
 
         return `
       <div class="photo-card${featured}"
@@ -717,7 +728,7 @@
            data-title="${ph.title}"
            data-caption="${ph.caption.replace(/"/g, '&quot;')}"
            data-tags="${ph.tags.join(',')}"
-           data-src="${ph.src}">
+           data-src="${ph.src}"${linkAttr}>
         <div class="photo-wrap">${imgContent}</div>
         <div class="photo-meta">
           <p class="photo-title">${ph.title}</p>
@@ -780,7 +791,12 @@
 
     document.getElementById('gallery-root').addEventListener('click', e => {
       const card = e.target.closest('.photo-card');
-      if (card) openLightbox(card);
+      if (!card) return;
+      if (card.dataset.link) {
+        window.open(card.dataset.link, '_blank');
+        return;
+      }
+      openLightbox(card);
     });
 
     document.getElementById('lb-close').addEventListener('click', () => {
