@@ -432,6 +432,7 @@
   <button class="filter-btn" data-filter="live">Live Events</button>
   <button class="filter-btn" data-filter="dev">Dev Tools</button>
   <button class="filter-btn" data-filter="ai">AI / Generative</button>
+  <button class="filter-btn" data-filter="buddy">Buddy</button>
 </div>
 
 <!-- ═══════════════════════════════════════════════════
@@ -483,7 +484,7 @@
      - `featured` → true makes the card span 2 columns
 
    Filter categories (must match a filter-btn data-filter above):
-     "xr" | "installation" | "live" | "dev" | "ai"
+     "xr" | "installation" | "live" | "dev" | "ai" | "buddy"
 ═══════════════════════════════════════════════════════════ */
 const PROJECTS = [
   {
@@ -658,6 +659,53 @@ const PROJECTS = [
         title: "Procedural World Builder",
         caption: "WebGL terrain generator that uses noise + ML-guided biome placement to create explorable landscapes on demand.",
         tags: ["WebGL", "GLSL", "ML"]
+      }
+    ]
+  },
+  {
+    id: "buddy",
+    number: "06",
+    title: "Buddy",
+    tag: "buddy",
+    tagLabel: "Buddy",
+    description: "Photos from the Buddy album (Google Photos share links).",
+    photos: [
+      {
+        src: "https://photos.google.com/share/AF1QipO6Pxoq2Ryc-6FJ5MzqX4M0fz_J0t1L5G11GH5BQZsQayttdpeuwiO2S2d_gtqeXg/photo/AF1QipPnpJyt3M3vjHVy75rte_58-KK3hEAJljuzoK95?key=dFNGMUkzcVU5eU9NSkpGQ00tejZtN2xzNFpScmVn",
+        title: "Buddy 1",
+        caption: "From the Buddy Google Photos shared album (photos.google.com:.webloc).",
+        tags: ["Photos"],
+        featured: true
+      },
+      {
+        src: "https://photos.google.com/share/AF1QipO6Pxoq2Ryc-6FJ5MzqX4M0fz_J0t1L5G11GH5BQZsQayttdpeuwiO2S2d_gtqeXg/photo/AF1QipNxG3tfWhYzpIondOl9tcowZ-zO_TUWTsch910K?key=dFNGMUkzcVU5eU9NSkpGQ00tejZtN2xzNFpScmVn",
+        title: "Buddy 2",
+        caption: "From the Buddy Google Photos shared album (photos.google.com: 1.webloc).",
+        tags: ["Photos"]
+      },
+      {
+        src: "https://photos.google.com/share/AF1QipO6Pxoq2Ryc-6FJ5MzqX4M0fz_J0t1L5G11GH5BQZsQayttdpeuwiO2S2d_gtqeXg/photo/AF1QipN2SuO-zKO-A4-DjhokuhzAj4AW1Soc_y8InbdX?key=dFNGMUkzcVU5eU9NSkpGQ00tejZtN2xzNFpScmVn",
+        title: "Buddy 3",
+        caption: "From the Buddy Google Photos shared album (photos.google.com: 2.webloc).",
+        tags: ["Photos"]
+      },
+      {
+        src: "https://photos.google.com/share/AF1QipO6Pxoq2Ryc-6FJ5MzqX4M0fz_J0t1L5G11GH5BQZsQayttdpeuwiO2S2d_gtqeXg/photo/AF1QipOokwwzUKQQQ4yDSgnuByXTmo9vAOeBeUgPPjGY?key=dFNGMUkzcVU5eU9NSkpGQ00tejZtN2xzNFpScmVn",
+        title: "Buddy 4",
+        caption: "From the Buddy Google Photos shared album (photos.google.com: 3.webloc).",
+        tags: ["Photos"]
+      },
+      {
+        src: "https://photos.google.com/share/AF1QipO6Pxoq2Ryc-6FJ5MzqX4M0fz_J0t1L5G11GH5BQZsQayttdpeuwiO2S2d_gtqeXg/photo/AF1QipNgD4dpLK3UBxBO9_ghJzsAf-lt5Z2btcYCBvEN?key=dFNGMUkzcVU5eU9NSkpGQ00tejZtN2xzNFpScmVn",
+        title: "Buddy 5",
+        caption: "From the Buddy Google Photos shared album (photos.google.com: 4.webloc).",
+        tags: ["Photos"]
+      },
+      {
+        src: "https://photos.google.com/share/AF1QipO6Pxoq2Ryc-6FJ5MzqX4M0fz_J0t1L5G11GH5BQZsQayttdpeuwiO2S2d_gtqeXg/photo/AF1QipP71hjwL0Sh6R0Bi1isNGU7uODDMqp2ksO0KY8T?key=dFNGMUkzcVU5eU9NSkpGQ00tejZtN2xzNFpScmVn",
+        title: "Buddy 6",
+        caption: "From the Buddy Google Photos shared album (photos.google.com: 5.webloc).",
+        tags: ["Photos"]
       }
     ]
   }
