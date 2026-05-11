@@ -93,6 +93,9 @@ export class Renderer {
           <a href="${esc(hero.ctaPrimary.href)}" class="btn btn-primary">
             <span data-path="hero.ctaPrimary.text">${esc(hero.ctaPrimary.text)}</span>
           </a>
+          <a href="${esc((hero.ctaPortfolio || { href: 'portfolio.html' }).href)}" class="btn btn-outline">
+            <span data-path="hero.ctaPortfolio.text">${esc((hero.ctaPortfolio || { text: 'Portfolio' }).text)}</span>
+          </a>
           <a href="${esc(hero.ctaSecondary.href)}" class="btn btn-outline">
             <span data-path="hero.ctaSecondary.text">${esc(hero.ctaSecondary.text)}</span>
           </a>
