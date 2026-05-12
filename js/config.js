@@ -59,7 +59,7 @@ export const DEFAULT_CONTENT = {
     description:
       "Have a project in mind, need a website built, or just want to talk about something you\u2019re building? Reach out.",
     links: [
-      { text: 'GitHub', href: 'https://github.com/XavierMidnight', style: 'primary', external: true },
+      { text: 'Email', href: 'mailto:jeffreyjameswood@gmail.com', style: 'primary', external: true },
     ],
   },
 
