@@ -1,3 +1,5 @@
+import { randomGenome, applyGenome } from './style-genome.js';
+
 const MANIFEST = 'variants/index.json';
 
 /**
@@ -9,6 +11,7 @@ const MANIFEST = 'variants/index.json';
  */
 export class Variants {
   #active = null;
+  #genome = null;
 
   /** Variant name from ?variant=, or null. */
   static requested() {
@@ -18,6 +21,33 @@ export class Variants {
   /** The variant currently being displayed, or null for default content. */
   get active() {
     return this.#active;
+  }
+
+  /** The style genome applied this pageview, or null. */
+  get genome() {
+    return this.#genome;
+  }
+
+  /**
+   * Restyle the page from a generated genome.
+   *
+   * Style is a separate axis from content: ?style=random rerolls the palette,
+   * type and spacing on every refresh while leaving the words alone, and
+   * ?style=<seed> reproduces a specific one. Text is never generated — that
+   * needs an explicit opt-in, since the words are the owner's, not the
+   * system's.
+   */
+  applyStyle() {
+    const param = new URLSearchParams(location.search).get('style');
+    if (!param) return null;
+    const seed = param === 'random' || param === '' ? undefined : Number(param);
+    if (param !== 'random' && param !== '' && !Number.isFinite(seed)) {
+      console.warn(`[variants] style seed "${param}" is not a number — ignoring`);
+      return null;
+    }
+    this.#genome = randomGenome(seed);
+    applyGenome(this.#genome);
+    return this.#genome;
   }
 
   /**

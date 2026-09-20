@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   saveIndicator.init();
   darkMode.init();
 
+  variants.applyStyle();
   const variantContent = await variants.resolve();
   renderer.renderAll(variantContent ?? contentManager.getContent());
 
