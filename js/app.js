@@ -33,9 +33,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   saveIndicator.init();
   darkMode.init();
 
-  variants.applyStyle();
+  const styleGenome = variants.applyStyle();
   const variantContent = await variants.resolve();
   renderer.renderAll(variantContent ?? contentManager.getContent());
+  // After renderAll: the renderers replace each section's innerHTML, and
+  // reordering the shells has to happen against the populated DOM. Moving a
+  // section invalidates the IntersectionObserver set up during render — the
+  // entries it already delivered were for the old positions — so reveal
+  // animations have to be re-armed or the moved sections never become visible.
+  if (variants.applyLayoutGenome(styleGenome?.seed ?? null)) {
+    renderer.setupScrollAnimations();
+  }
 
   particles.init();
   effects.initParallax();

@@ -1,4 +1,5 @@
 import { randomGenome, applyGenome } from './style-genome.js';
+import { randomStructure, applyStructure } from './structure-genome.js';
 
 const MANIFEST = 'variants/index.json';
 
@@ -12,6 +13,7 @@ const MANIFEST = 'variants/index.json';
 export class Variants {
   #active = null;
   #genome = null;
+  #structure = null;
 
   /** Variant name from ?variant=, or null. */
   static requested() {
@@ -26,6 +28,36 @@ export class Variants {
   /** The style genome applied this pageview, or null. */
   get genome() {
     return this.#genome;
+  }
+
+  /** The structure genome applied this pageview, or null. */
+  get structure() {
+    return this.#structure;
+  }
+
+  /**
+   * Reorder sections and switch per-section arrangements.
+   *
+   * ?layout=random rerolls, ?layout=<seed> reproduces one. ?style= seeds this
+   * too when ?layout= is absent, so a single seed describes a whole design.
+   */
+  applyLayoutGenome(styleSeed = null) {
+    const param = new URLSearchParams(location.search).get('layout');
+    if (!param && styleSeed == null) return null;
+    let seed;
+    if (param && param !== 'random' && param !== '') {
+      seed = Number(param);
+      if (!Number.isFinite(seed)) {
+        console.warn(`[variants] layout seed "${param}" is not a number — ignoring`);
+        return null;
+      }
+    } else if (param === 'random' || param === '') {
+      seed = undefined;
+    } else {
+      seed = styleSeed;
+    }
+    this.#structure = randomStructure(seed);
+    return applyStructure(this.#structure);
   }
 
   /**

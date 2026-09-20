@@ -546,3 +546,57 @@ body.dark .dark-toggle {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* ── structural arrangements ──────────────────────────────────────────────
+   Set by js/structure-genome.js as arr-* classes on the section shells. The
+   renderers emit identical markup for every arrangement; only these rules
+   differ, so edit mode's [data-path] bindings are unaffected. */
+
+#hero.arr-centered .hero-inner { max-width: 760px; margin-inline: auto; text-align: center; }
+#hero.arr-centered .hero-ctas { justify-content: center; }
+
+#hero.arr-split .hero-inner {
+  max-width: none;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+}
+#hero.arr-split .hero-tag { grid-column: 1; justify-self: start; }
+#hero.arr-split .hero-name { grid-column: 1; }
+#hero.arr-split .hero-subtitle { grid-column: 2; grid-row: 2 / span 2; align-self: center; margin: 0; }
+#hero.arr-split .hero-ctas { grid-column: 1; }
+
+#hero.arr-minimal .hero-tag,
+#hero.arr-minimal .hero-shapes { display: none; }
+#hero.arr-minimal .hero-inner { max-width: 560px; }
+
+#about.arr-stacked .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+#about.arr-skills-first .about-grid { grid-template-columns: 0.8fr 1.2fr; }
+#about.arr-skills-first .about-bio { order: 2; }
+#about.arr-skills-first .skills-wrap { order: 1; }
+#about.arr-wide-bio .about-grid { grid-template-columns: 1.7fr 1fr; }
+
+#contact.arr-centered .container { text-align: center; }
+#contact.arr-centered .contact-links { justify-content: center; }
+/* The contact section already paints its own background with light text, so
+   this inset must not repaint it — a second background colour here put white
+   text on a light card. Tint the existing surface instead. */
+#contact.arr-banner .container {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 5vw, 3.5rem);
+  text-align: center;
+}
+#contact.arr-banner .contact-links { justify-content: center; }
+
+body.nav-hidden .nav { display: none; }
+body.nav-hidden { padding-top: 0; }
+body.no-hero-shapes .hero-shapes { display: none; }
+
+@media (max-width: 760px) {
+  #hero.arr-split .hero-inner,
+  #about.arr-skills-first .about-grid,
+  #about.arr-wide-bio .about-grid { grid-template-columns: 1fr; }
+}
