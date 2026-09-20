@@ -1,0 +1,6 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'>
+  <rect width='800' height='600' fill='#e8e8e4'/>
+  <rect x='1' y='1' width='798' height='598' fill='none' stroke='#c9c9c2' stroke-width='2' stroke-dasharray='10 8'/>
+  <text x='400' y='285' font-family='monospace' font-size='30' fill='#8a8a82' text-anchor='middle'>SCREEN OVERLAY</text>
+  <text x='400' y='325' font-family='monospace' font-size='18' fill='#a8a8a0' text-anchor='middle'>screenshot needed</text>
+</svg>

@@ -495,21 +495,18 @@
 
   <!-- HERO -->
   <section class="portfolio-hero reveal">
-    <p class="hero-eyebrow">Immersive Technology — Selected Work</p>
-    <h1>Building worlds<br>that <em>feel real</em></h1>
-    <p class="hero-sub">Creating worlds thru the combination of art and technology</p>
+    <p class="hero-eyebrow">Selected Work — 2026</p>
+    <h1>Systems that run<br>on <em>real hardware</em></h1>
+    <p class="hero-sub">Local AI infrastructure, the devices that talk to it, and the agents that build it.</p>
   </section>
 
   <!-- FILTER BAR -->
   <div class="filter-bar reveal">
     <span class="filter-label">Filter:</span>
     <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="ai">Art</button>
-    <button class="filter-btn" data-filter="lights">Lights</button>
-    <button class="filter-btn" data-filter="microcontrollers">Microcontrollers</button>
-    <button class="filter-btn" data-filter="projections">Projections</button>
-    <button class="filter-btn" data-filter="robots">Robots</button>
-    <button class="filter-btn" data-filter="misc">Misc</button>
+    <button class="filter-btn" data-filter="voice">Voice &amp; Audio</button>
+    <button class="filter-btn" data-filter="agents">Agents &amp; Infra</button>
+    <button class="filter-btn" data-filter="hardware">Hardware</button>
   </div>
 
   <!-- ═══════════════════════════════════════════════════
@@ -564,142 +561,92 @@
          "xr" | "installation" | "live" | "dev" | "ai" | "buddy"
     ═══════════════════════════════════════════════════════════ */
     const PROJECTS = [
-      
-      
-      
-      
       {
-        id: "Art",
+        id: "Voice",
         number: "01",
-        title: "Mixed Media Art",
-        tag: "ai",
-        tagLabel: "Art / Software / Hardware",
-        description: "Experiments in mixed media art.",
+        title: "Local Voice Platform",
+        tag: "voice",
+        tagLabel: "Python / FastAPI / ESP32 / CUDA",
+        description: "Speech in, speech out, entirely on my own hardware. Whisper for transcription, a local LLM, and streaming TTS — with four custom devices as clients.",
         photos: [
           {
-            src: "public/portfolio/art/IMG_5913.jpg",
-            title: "Digital",
-            caption: "Ipads and Touchscreens.",
-            tags: ["Photoshop"],
+            src: "public/portfolio/_placeholder/voice-hardware.svg",
+            title: "The Device Fleet",
+            caption: "Four ESP32-S3 clients: a touchscreen stopwatch, a two-button stick, an NFC dial that plays music from a tag, and a click-wheel knob remote. Each captures audio, streams WAV over a hand-rolled binary protocol, and plays back sentences as they arrive.",
+            tags: ["ESP32-S3", "C++ / PlatformIO", "M5Unified", "I2S audio"],
             featured: true,
-            link: "https://photos.app.goo.gl/YxDRLCccWx2Vc3ci7",
           },
           {
-            src: "public/portfolio/art/20160313_041146.jpg",
-            title: "Physical",
-            caption: "Art with physical media.",
-            tags: ["LTX", "ComfyUI", "Prompt Engineering"],
-            link: "https://photos.app.goo.gl/DWXdgCpQzEVSvLMv8",
+            src: "public/portfolio/_placeholder/voice-studio.svg",
+            title: "Voice Studio",
+            caption: "Clone a voice from a sample, then check it against a speaker embedding to catch drift before it ships. Built on Chatterbox-Turbo with Sesame CSM-1B as an alternate engine.",
+            tags: ["Voice cloning", "resemblyzer", "demucs"],
           },
           {
-            src: "public/portfolio/art/ai/IMG_5818.PNG",
-            title: "Generative",
-            caption: "Local image generation with Stable Diffusion.",
-            tags: ["Stable Diffusion", "Local Image Generation"],
-            link: "https://photos.app.goo.gl/jVb8BkCg8s8dGkDs8",
-          }
-        ]
+            src: "public/portfolio/_placeholder/generative.svg",
+            title: "Sentence-Level Streaming",
+            caption: "The LLM streams, and each sentence is synthesized and shipped the moment it completes — so playback starts before the model has finished thinking. Models stay warm; latency and failures are logged and benchmarked rather than guessed at.",
+            tags: ["WebSockets", "faster-whisper", "Streaming TTS"],
+          },
+        ],
       },
       {
-        id: "Lights",
+        id: "Agents",
         number: "02",
-        title: "Lights",
-        tag: "lights",
-        tagLabel: "Lights",
-        description: "Various forms of leds and animations.",
+        title: "Autonomous Development Pipeline",
+        tag: "agents",
+        tagLabel: "Node / Express / SQLite / Docker",
+        description: "An agent that works my own Jira board. A ticket moves to ready, it branches, writes the code, commits, and reports back.",
         photos: [
           {
-            src: "public/portfolio/lights/lasers/IMG_4822.jpg",
-            title: "Lasers",
-            caption: "Manipulating lasers",
-            tags: ["Photos"],
-            link: "https://photos.app.goo.gl/wbaoEqYUecGf2S2z8",
-            featured: true
+            src: "public/portfolio/_placeholder/jira-agent.svg",
+            title: "Ticket to Commit",
+            caption: "Webhook fires, a triage model gates the ticket, a detached runner picks it up and survives a server restart mid-job. It routes to the right repo, opens a branch, and comments the outcome back to Jira. Publicly reachable over Tailscale; it has processed a few hundred of my own tickets.",
+            tags: ["Claude Code SDK", "Webhooks", "Job state machine"],
+            featured: true,
           },
           {
-            src: "public/portfolio/lights/Screenshot 2026-05-11 at 5.20.36 PM.png",
-            title: "Leds",
-            caption: "Individual LEDs and strips.",
-            tags: ["Photos"],
-            link: "https://photos.app.goo.gl/4U1b93Q8zG6DS3AP9",
+            src: "public/portfolio/_placeholder/gpu-queue.svg",
+            title: "GPU Queue and Service Registry",
+            caption: "One 24GB card, several models that all want it. Services register on startup and are health-polled; the queue arbitrates by VRAM budget so a video job and a TTS job do not collide.",
+            tags: ["WebSocket event bus", "React / Vite", "VRAM scheduling"],
           },
           {
-            src: "public/portfolio/lights/matrix/Screenshot 2026-05-11 at 5.22.24 PM.png",
-            title: "Matrices",
-            caption: "Images and animations on matrices.",
-            tags: ["Photos"],
-            link: "https://photos.app.goo.gl/q95eYH4DjsrNKkVo6",
-          }
-        ]
+            src: "public/portfolio/_placeholder/screen-overlay.svg",
+            title: "Screen Pipeline",
+            caption: "A transparent always-on-top overlay: draw a region, then run it through a composable chain — OCR, a local LLM, image generation. The capture step is injectable, which makes the whole pipeline testable without a screen.",
+            tags: ["Electron", "Tesseract.js", "Ollama"],
+          },
+        ],
       },
       {
-        id: "Microcontrollers",
+        id: "Hardware",
         number: "03",
-        title: "Microcontrollers",
-        tag: "microcontrollers",
-        tagLabel: "Microcontrollers",
-        description: "Microcontrollers and applications.",
+        title: "Hardware and Reverse Engineering",
+        tag: "hardware",
+        tagLabel: "C++ / Python / USB HID",
+        description: "Microcontrollers, displays, and figuring out how someone else's robot works.",
         photos: [
           {
-            src: "public/portfolio/microcontrollers/IMG_2195.JPG",
-            title: "Microcontrollers",
-            caption: "Various microcontrollers and their applications.",
-            tags: ["Photos"],
-            link: "https://photos.app.goo.gl/uKyhTnUfUm4FAgXV8",
-          }
-        ]
+            src: "public/portfolio/_placeholder/robot.svg",
+            title: "Robosen Control",
+            caption: "Reverse-engineered a commercial humanoid: sniffed its USB HID traffic, derived servo ranges from the vendor's web studio, and wrote custom action and audio files onto the robot's own filesystem.",
+            tags: ["USB HID", "Playwright", "Servo calibration"],
+          },
+          {
+            src: "public/portfolio/_placeholder/lighting.svg",
+            title: "Displays and Lighting",
+            caption: "A hand-written driver for a QSPI AMOLED panel with no existing board support, capacitive touch, rotary encoders with interrupt handling, and RGB hardware driven from a CLI.",
+            tags: ["SH8601 / ST77916", "CST816 touch", "OpenRGB"],
+          },
+          {
+            src: "public/portfolio/_placeholder/video-wall.svg",
+            title: "Video Wall",
+            caption: "A drag-and-drop mosaic grid for playing many videos at once, with a guard against symlink cycles in the folder scanner.",
+            tags: ["Electron", "React"],
+          },
+        ],
       },
-      {
-        id: "Projections",
-        number: "04",
-        title: "Projections",
-        tag: "projections",
-        tagLabel: "Projections",
-        description: "Projections and applications.",
-        photos: [
-          {
-            src: "public/portfolio/projections/lookingglass/Screenshot 2026-05-11 at 5.26.35 PM.png",
-            title: "Looking Glass",
-            caption: "Purchased from https://lookingglassfactory.com/ . A 45 perspective light field display.",
-            tags: ["Looking Glass", "Paralax"],
-            link: "https://photos.app.goo.gl/aidA66otcmVfQZ2u5",
-          }
-        ]
-      },
-      {
-        id: "Robots",
-        number: "05",
-        title: "Robots",
-        tag: "robots",
-        tagLabel: "Robots",
-        description: "Robots and applications.",
-        photos: [
-          {
-            src: "public/portfolio/robots/Screenshot 2026-05-11 at 5.28.58 PM.png",
-            title: "Robots",
-            caption: "Various robots and their applications.",
-            tags: ["Photos"],
-            link: "https://photos.app.goo.gl/gCAPN3EuUHv9fRYX6",
-          }
-        ]
-      },
-      {
-        id: "Misc",
-        number: "06",
-        title: "Misc",
-        tag: "misc",
-        tagLabel: "Misc",
-        description: "Trying to organize my brain is complex.",
-        photos: [
-          {
-            src: "public/portfolio/misc/IMG_6198.JPG",
-            title: "Misc",
-            caption: "Unorganized thoughts and experiments.",
-            tags: ["Photos"],
-            link: "https://photos.app.goo.gl/JpsPJRpqR5qjNt149",
-          }
-        ]
-      }
     ];
 
     /* ───────────────────────────────────────────────────────────
