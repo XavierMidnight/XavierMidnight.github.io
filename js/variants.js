@@ -1,5 +1,6 @@
 import { randomGenome, applyGenome } from './style-genome.js';
 import { randomStructure, applyStructure } from './structure-genome.js';
+import { randomDecor, applyDecor } from './decor-genome.js';
 
 const MANIFEST = 'variants/index.json';
 
@@ -14,6 +15,7 @@ export class Variants {
   #active = null;
   #genome = null;
   #structure = null;
+  #decor = null;
 
   /** Variant name from ?variant=, or null. */
   static requested() {
@@ -33,6 +35,42 @@ export class Variants {
   /** The structure genome applied this pageview, or null. */
   get structure() {
     return this.#structure;
+  }
+
+  /** The decor genome applied this pageview, or null. */
+  get decor() {
+    return this.#decor;
+  }
+
+  /**
+   * Regenerate the hero's decorative layer.
+   *
+   * ?decor=random rerolls, ?decor=<seed> reproduces one, ?decor=off clears it.
+   * Falls back to the style seed so one number drives the whole design.
+   */
+  applyDecorGenome(fallbackSeed = null) {
+    const param = new URLSearchParams(location.search).get('decor');
+    if (param === 'off') {
+      const host = document.querySelector('.hero-shapes');
+      if (host) host.innerHTML = '';
+      return null;
+    }
+    if (!param && fallbackSeed == null) return null;
+    let seed;
+    if (param && param !== 'random' && param !== '') {
+      seed = Number(param);
+      if (!Number.isFinite(seed)) {
+        console.warn(`[variants] decor seed "${param}" is not a number — ignoring`);
+        return null;
+      }
+    } else if (param === 'random' || param === '') {
+      seed = undefined;
+    } else {
+      seed = fallbackSeed;
+    }
+    this.#decor = randomDecor(seed);
+    applyDecor(this.#decor);
+    return this.#decor;
   }
 
   /**

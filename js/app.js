@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (variants.applyLayoutGenome(styleGenome?.seed ?? null)) {
     renderer.setupScrollAnimations();
   }
+  variants.applyDecorGenome(styleGenome?.seed ?? null);
 
   particles.init();
   effects.initParallax();

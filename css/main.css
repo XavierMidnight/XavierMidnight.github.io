@@ -600,3 +600,46 @@ body.no-hero-shapes .hero-shapes { display: none; }
   #about.arr-skills-first .about-grid,
   #about.arr-wide-bio .about-grid { grid-template-columns: 1fr; }
 }
+
+/* ── generated decorative layer ───────────────────────────────────────────
+   js/decor-genome.js builds .decor-shape elements inside .hero-shapes. Motion
+   uses transform only; parallax and drag use translate, so the two compose
+   without fighting. --amp is set per shape. */
+
+.decor-shape { position: absolute; pointer-events: none; will-change: transform; }
+
+@keyframes decor-float {
+  0%, 100% { transform: translate(0, 0); }
+  33%      { transform: translate(calc(var(--amp) * -0.5), var(--amp)); }
+  66%      { transform: translate(calc(var(--amp) * 0.4), calc(var(--amp) * -0.6)); }
+}
+@keyframes decor-orbit {
+  0%   { transform: rotate(0deg) translateX(var(--amp)) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(var(--amp)) rotate(-360deg); }
+}
+@keyframes decor-drift {
+  0%   { transform: translate(calc(var(--amp) * -1), 0); }
+  50%  { transform: translate(var(--amp), calc(var(--amp) * 0.3)); }
+  100% { transform: translate(calc(var(--amp) * -1), 0); }
+}
+@keyframes decor-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.25); }
+}
+@keyframes decor-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes decor-sway {
+  0%, 100% { transform: skewX(0deg) translateX(0); }
+  50%      { transform: skewX(6deg) translateX(var(--amp)); }
+}
+@keyframes decor-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(var(--amp) * -1)); }
+}
+
+/* Motion is decoration; anyone who has asked the OS to stop it gets stillness. */
+@media (prefers-reduced-motion: reduce) {
+  .decor-shape { animation: none !important; }
+}
