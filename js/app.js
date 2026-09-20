@@ -46,7 +46,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   variants.applyDecorGenome(styleGenome?.seed ?? null);
 
-  particles.init();
+  // The generated canvas draws to the same element as the stock particles, so
+  // only one may own it — two requestAnimationFrame loops on one context
+  // fight over clearRect and neither renders correctly.
+  if (!variants.applyCanvasGenome(styleGenome?.seed ?? null)) {
+    particles.init();
+  }
   effects.initParallax();
   effects.initCounters();
   effects.typeSubtitle();

@@ -44,7 +44,7 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  line-height: 1.75;
+  line-height: var(--body-leading, 1.75);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -78,10 +78,17 @@ body::after {
    ═══════════════════════════════════════════ */
 .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--pad); }
 body:not(.page-portfolio) section { padding: var(--section-gap) 0; }
-h1, h2, h3 { font-weight: 700; line-height: 1.12; letter-spacing: -0.03em; color: var(--text); }
-h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); }
-h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
-h3 { font-size: 1.15rem; }
+h1, h2, h3 {
+  font-family: var(--font-display, var(--font));
+  font-weight: var(--display-weight, 700);
+  line-height: 1.12;
+  letter-spacing: var(--display-tracking, -0.03em);
+  text-transform: var(--display-case, none);
+  color: var(--text);
+}
+h1 { font-size: var(--h1-size, clamp(2.8rem, 7vw, 5.5rem)); }
+h2 { font-size: var(--h2-size, clamp(1.8rem, 4vw, 2.8rem)); }
+h3 { font-size: var(--h3-size, 1.15rem); }
 
 .section-label {
   font-family: var(--mono);
@@ -188,7 +195,7 @@ h3 { font-size: 1.15rem; }
 .hero-name span:first-child { color: var(--text-2); font-weight: 300; font-size: 0.5em; letter-spacing: 0.01em; }
 .hero-subtitle {
   font-size: clamp(1rem,2.2vw,1.2rem); color: var(--text-2);
-  line-height: 1.75; margin: 1.5rem 0 2.5rem; max-width: 500px;
+  line-height: var(--body-leading, 1.75); margin: 1.5rem 0 2.5rem; max-width: 500px;
 }
 .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
 

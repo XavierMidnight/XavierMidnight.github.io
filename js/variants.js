@@ -1,6 +1,7 @@
 import { randomGenome, applyGenome } from './style-genome.js';
 import { randomStructure, applyStructure } from './structure-genome.js';
 import { randomDecor, applyDecor } from './decor-genome.js';
+import { randomCanvas, GenerativeCanvas } from './canvas-genome.js';
 
 const MANIFEST = 'variants/index.json';
 
@@ -16,6 +17,8 @@ export class Variants {
   #genome = null;
   #structure = null;
   #decor = null;
+  #canvas = null;
+  #canvasRunner = null;
 
   /** Variant name from ?variant=, or null. */
   static requested() {
@@ -40,6 +43,43 @@ export class Variants {
   /** The decor genome applied this pageview, or null. */
   get decor() {
     return this.#decor;
+  }
+
+  /** The canvas genome applied this pageview, or null. */
+  get canvas() {
+    return this.#canvas;
+  }
+
+  /**
+   * Swap the hero's canvas behaviour.
+   *
+   * ?canvas=random rerolls, ?canvas=<seed> reproduces, ?canvas=off disables.
+   * Returns true when it took over, so the caller can skip the stock particles
+   * rather than run two animation loops on one canvas.
+   */
+  applyCanvasGenome(fallbackSeed = null) {
+    const param = new URLSearchParams(location.search).get('canvas');
+    if (param === 'off') {
+      this.#canvas = { behaviour: 'none' };
+      return true;
+    }
+    if (!param && fallbackSeed == null) return false;
+    let seed;
+    if (param && param !== 'random' && param !== '') {
+      seed = Number(param);
+      if (!Number.isFinite(seed)) {
+        console.warn(`[variants] canvas seed "${param}" is not a number — ignoring`);
+        return false;
+      }
+    } else if (param === 'random' || param === '') {
+      seed = undefined;
+    } else {
+      seed = fallbackSeed;
+    }
+    this.#canvas = randomCanvas(seed);
+    this.#canvasRunner = new GenerativeCanvas();
+    this.#canvasRunner.start(this.#canvas);
+    return true;
   }
 
   /**

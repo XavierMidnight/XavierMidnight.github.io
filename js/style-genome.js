@@ -31,6 +31,22 @@ export const FONT_STACKS = [
   "'Helvetica Neue', Helvetica, Arial, sans-serif",
   "'SF Mono', 'Cascadia Code', 'Fira Code', Consolas, monospace",
   "'Trebuchet MS', 'Segoe UI', Verdana, sans-serif",
+  "'Palatino Linotype', Palatino, 'Book Antiqua', serif",
+  "'Courier New', Courier, monospace",
+  "Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif",
+  "'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif",
+  "'Century Gothic', 'Apple Gothic', AppleGothic, sans-serif",
+  "Baskerville, 'Baskerville Old Face', 'Times New Roman', serif",
+  "Verdana, Geneva, sans-serif",
+];
+
+// Display faces can differ from body text. Pairing a heavy display with a
+// readable body is the single biggest lever on how a page reads.
+export const DISPLAY_STACKS = [
+  ...FONT_STACKS,
+  "'Arial Black', 'Arial Bold', Gadget, sans-serif",
+  "'Bodoni MT', Didot, 'Didot LT STD', serif",
+  "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif",
 ];
 
 /** A genome: the small set of genes everything else derives from. */
@@ -50,6 +66,13 @@ export function randomGenome(seed = Math.floor(Math.random() * 1e9)) {
     radius: round(r() * 26),
     density: round(0.6 + r() * 1.1, 2),
     fontIndex: Math.floor(r() * FONT_STACKS.length),
+    displayIndex: Math.floor(r() * DISPLAY_STACKS.length),
+    // Type scale ratio: 1.15 is a quiet page, 1.7 is a poster.
+    typeScale: round(1.12 + r() * 0.62, 3),
+    displayWeight: pick([300, 400, 600, 700, 800, 900]),
+    displayTracking: round(-0.05 + r() * 0.22, 3),
+    displayCase: pick(['none', 'none', 'uppercase']),
+    bodyLeading: round(1.4 + r() * 0.6, 2),
     shadowDepth: round(r(), 2),
     borderWeight: round(r(), 2),
   };
@@ -100,6 +123,17 @@ export function genomeToCSS(g) {
     '--radius-lg': `${round(g.radius * 1.6)}px`,
 
     '--font': FONT_STACKS[g.fontIndex],
+    '--font-display': DISPLAY_STACKS[g.displayIndex],
+
+    // One ratio drives every heading size, so the hierarchy stays proportional
+    // whatever the roll.
+    '--h1-size': `clamp(${round(1.9 * g.typeScale, 2)}rem, ${round(4.4 * g.typeScale, 1)}vw, ${round(2.6 * g.typeScale ** 3, 2)}rem)`,
+    '--h2-size': `clamp(${round(1.3 * g.typeScale, 2)}rem, ${round(2.6 * g.typeScale, 1)}vw, ${round(1.5 * g.typeScale ** 2, 2)}rem)`,
+    '--h3-size': `${round(0.95 * g.typeScale, 2)}rem`,
+    '--display-weight': String(g.displayWeight),
+    '--display-tracking': `${g.displayTracking}em`,
+    '--display-case': g.displayCase,
+    '--body-leading': String(g.bodyLeading),
 
     '--section-gap': `clamp(${round(3 * g.density, 1)}rem, ${round(9 * g.density)}vw, ${round(7 * g.density, 1)}rem)`,
     '--container': `${round(880 + g.density * 320)}px`,
