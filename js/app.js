@@ -44,10 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Editing writes to the same localStorage key the owner's real content lives
   // in, so a variant must not be editable — saving one would overwrite the
   // real site with a throwaway.
-  if (!variants.active) {
-    editMode.init();
-    editMode.activate();
-  }
+  if (!variants.active) editMode.init();
 });
 
 // ── event delegation ────────────────────────────────────

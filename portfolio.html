@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Jeffrey James Wood — Immersive Technology Portfolio. Interactive installations, spatial computing, and experiential design.">
+  <title>Jeffrey James Wood — Immersive Portfolio</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    /* Portfolio page — uses global tokens from css/main.css (light + body.dark) */
+    body.page-portfolio {
+      scroll-padding-top: calc(var(--nav-h) + 1rem);
+    }
+
+    body.page-portfolio .nav-logo .nav-logo-sub {
+      font-weight: 600;
+      color: var(--text-2);
+    }
+
+    body.page-portfolio .nav-links a.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    body.page-portfolio .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .portfolio-hero {
+      padding: calc(var(--nav-h) + 4.5rem) var(--pad) 5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 1.75rem;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 2px;
+    }
+
+    .portfolio-hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4.25rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+
+    .portfolio-hero h1 em {
+      font-style: normal;
+      color: var(--blue);
+    }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+      color: var(--text-2);
+      max-width: 520px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+
+    .filter-bar {
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      padding: 0 var(--pad);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .filter-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-right: 0.35rem;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .filter-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .grid-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--pad) 6rem;
+    }
+
+    .project-section {
+      margin-bottom: 5rem;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .project-section.hidden {
+      display: none;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-number {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--blue);
+      min-width: 40px;
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .section-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-left: auto;
+      background: var(--bg-card);
+    }
+
+    .section-desc {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      max-width: 700px;
+      margin-bottom: 2rem;
+      line-height: 1.75;
+      padding-left: 56px;
+    }
+
+    @media (max-width: 640px) {
+      .section-desc {
+        padding-left: 0;
+      }
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    .photo-grid.wide {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+
+    .photo-grid.tight {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .photo-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm), var(--shadow-offset);
+      transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .photo-card:hover {
+      border-color: var(--blue);
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-md), var(--shadow-offset-lg);
+    }
+
+    .photo-card.featured {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 640px) {
+      .photo-card.featured {
+        grid-column: span 1;
+      }
+    }
+
+    .photo-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: var(--bg-alt);
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s;
+      filter: saturate(0.88) brightness(0.96);
+    }
+
+    .photo-card:hover .photo-wrap img {
+      transform: scale(1.03);
+      filter: saturate(1) brightness(1);
+    }
+
+    .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--bg-alt) 0%, var(--border-light) 100%);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--text-3);
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .photo-placeholder::after {
+      content: attr(data-label);
+    }
+
+    .photo-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 14px;
+      height: 14px;
+      background: var(--yellow);
+      clip-path: polygon(100% 0, 100% 100%, 0 0);
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 2;
+      box-shadow: -1px 1px 0 var(--blue-soft);
+    }
+
+    .photo-card:hover::after {
+      opacity: 1;
+    }
+
+    .photo-meta {
+      padding: 1rem 1.1rem;
+    }
+
+    .photo-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.01em;
+    }
+
+    .photo-caption {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      line-height: 1.55;
+    }
+
+    .photo-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 0.65rem;
+    }
+
+    .photo-tag {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--blue);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 100px;
+      background: var(--bg);
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2500;
+      background: rgba(15, 18, 25, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      padding: 2rem;
+    }
+
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox-inner {
+      max-width: 1000px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .lightbox-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lightbox-img-wrap {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .lightbox-img-wrap img {
+      width: 100%;
+      display: block;
+      max-height: 70vh;
+      object-fit: contain;
+    }
+
+    .lightbox-info {
+      padding: 1.1rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .lightbox-section {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .lightbox-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .lightbox-caption {
+      font-size: 0.88rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .lightbox-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.9);
+      font-family: var(--font);
+      font-size: 1.1rem;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      z-index: 2501;
+    }
+
+    .lightbox-close:hover {
+      border-color: var(--yellow);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .portfolio-footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem var(--pad);
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    .portfolio-footer a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .portfolio-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body class="page-portfolio">
+
+  <!-- NAV (matches index structure / main.css) -->
+  <nav id="nav" class="nav">
+    <div class="container nav-inner">
+      <a class="nav-logo" href="index.html">JJW<span class="nav-logo-sub"> / Portfolio</span></a>
+      <button class="nav-toggle" type="button" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="portfolio.html" class="active">Portfolio</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="portfolio-hero reveal">
+    <p class="hero-eyebrow">Immersive Technology — Selected Work</p>
+    <h1>Building worlds<br>that <em>feel real</em></h1>
+    <p class="hero-sub">Creating worlds thru the combination of art and technology</p>
+  </section>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar reveal">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="ai">Art</button>
+    <button class="filter-btn" data-filter="lights">Lights</button>
+    <button class="filter-btn" data-filter="microcontrollers">Microcontrollers</button>
+    <button class="filter-btn" data-filter="projections">Projections</button>
+    <button class="filter-btn" data-filter="robots">Robots</button>
+    <button class="filter-btn" data-filter="misc">Misc</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+     PROJECT DATA — Edit this JS object to add/remove
+     projects and photos. Each section = one project.
+     Each item in `photos` = one card in the gallery.
+═══════════════════════════════════════════════════ -->
+  <div class="grid-wrapper" id="gallery-root"></div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo lightbox">
+    <button class="lightbox-close" id="lb-close" aria-label="Close">✕</button>
+    <div class="lightbox-inner">
+      <div class="lightbox-img-wrap">
+        <img id="lb-img" src="" alt="">
+      </div>
+      <div class="lightbox-info">
+        <p class="lightbox-section" id="lb-section"></p>
+        <h2 class="lightbox-title" id="lb-title"></h2>
+        <p class="lightbox-caption" id="lb-caption"></p>
+        <div class="lightbox-tags" id="lb-tags"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="portfolio-footer">
+    <a href="index.html">← Back to jeffreyjameswood.com</a>
+    &nbsp;·&nbsp; Portfolio — Immersive Technology
+  </footer>
+
+  <script type="module" src="js/portfolio-bootstrap.js"></script>
+  <script>
+    /* ═══════════════════════════════════════════════════════════
+       PORTFOLIO DATA
+       ─────────────────────────────────────────────────────────
+       To add a new project section:
+         1. Copy one of the objects in the PROJECTS array below
+         2. Give it a unique `id`, a `title`, a `tag` category,
+            and a `description`
+         3. Add photo objects to its `photos` array
+    
+       To add a photo:
+         - `src`      → path to your image file (relative or absolute)
+                        Leave as "" to show a placeholder
+         - `title`    → short name shown on the card
+         - `caption`  → longer description (shown in lightbox)
+         - `tags`     → array of tech/concept labels
+         - `featured` → true makes the card span 2 columns
+    
+       Filter categories (must match a filter-btn data-filter above):
+         "xr" | "installation" | "live" | "dev" | "ai" | "buddy"
+    ═══════════════════════════════════════════════════════════ */
+    const PROJECTS = [
+      
+      
+      
+      
+      {
+        id: "Art",
+        number: "01",
+        title: "Mixed Media Art",
+        tag: "ai",
+        tagLabel: "Art / Software / Hardware",
+        description: "Experiments in mixed media art.",
+        photos: [
+          {
+            src: "public/portfolio/art/IMG_5913.jpg",
+            title: "Digital",
+            caption: "Ipads and Touchscreens.",
+            tags: ["Photoshop"],
+            featured: true,
+            link: "https://photos.app.goo.gl/YxDRLCccWx2Vc3ci7",
+          },
+          {
+            src: "public/portfolio/art/20160313_041146.jpg",
+            title: "Physical",
+            caption: "Art with physical media.",
+            tags: ["LTX", "ComfyUI", "Prompt Engineering"],
+            link: "https://photos.app.goo.gl/DWXdgCpQzEVSvLMv8",
+          },
+          {
+            src: "public/portfolio/art/ai/IMG_5818.PNG",
+            title: "Generative",
+            caption: "Local image generation with Stable Diffusion.",
+            tags: ["Stable Diffusion", "Local Image Generation"],
+            link: "https://photos.app.goo.gl/jVb8BkCg8s8dGkDs8",
+          }
+        ]
+      },
+      {
+        id: "Lights",
+        number: "02",
+        title: "Lights",
+        tag: "lights",
+        tagLabel: "Lights",
+        description: "Various forms of leds and animations.",
+        photos: [
+          {
+            src: "public/portfolio/lights/lasers/IMG_4822.jpg",
+            title: "Lasers",
+            caption: "Manipulating lasers",
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/wbaoEqYUecGf2S2z8",
+            featured: true
+          },
+          {
+            src: "public/portfolio/lights/Screenshot 2026-05-11 at 5.20.36 PM.png",
+            title: "Leds",
+            caption: "Individual LEDs and strips.",
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/4U1b93Q8zG6DS3AP9",
+          },
+          {
+            src: "public/portfolio/lights/matrix/Screenshot 2026-05-11 at 5.22.24 PM.png",
+            title: "Matrices",
+            caption: "Images and animations on matrices.",
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/q95eYH4DjsrNKkVo6",
+          }
+        ]
+      },
+      {
+        id: "Microcontrollers",
+        number: "03",
+        title: "Microcontrollers",
+        tag: "microcontrollers",
+        tagLabel: "Microcontrollers",
+        description: "Microcontrollers and applications.",
+        photos: [
+          {
+            src: "public/portfolio/microcontrollers/IMG_2195.JPG",
+            title: "Microcontrollers",
+            caption: "Various microcontrollers and their applications.",
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/uKyhTnUfUm4FAgXV8",
+          }
+        ]
+      },
+      {
+        id: "Projections",
+        number: "04",
+        title: "Projections",
+        tag: "projections",
+        tagLabel: "Projections",
+        description: "Projections and applications.",
+        photos: [
+          {
+            src: "public/portfolio/projections/lookingglass/Screenshot 2026-05-11 at 5.26.35 PM.png",
+            title: "Looking Glass",
+            caption: "Purchased from https://lookingglassfactory.com/ . A 45 perspective light field display.",
+            tags: ["Looking Glass", "Paralax"],
+            link: "https://photos.app.goo.gl/aidA66otcmVfQZ2u5",
+          }
+        ]
+      },
+      {
+        id: "Robots",
+        number: "05",
+        title: "Robots",
+        tag: "robots",
+        tagLabel: "Robots",
+        description: "Robots and applications.",
+        photos: [
+          {
+            src: "public/portfolio/robots/Screenshot 2026-05-11 at 5.28.58 PM.png",
+            title: "Robots",
+            caption: "Various robots and their applications.",
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/gCAPN3EuUHv9fRYX6",
+          }
+        ]
+      },
+      {
+        id: "Misc",
+        number: "06",
+        title: "Misc",
+        tag: "misc",
+        tagLabel: "Misc",
+        description: "Trying to organize my brain is complex.",
+        photos: [
+          {
+            src: "public/portfolio/misc/IMG_6198.JPG",
+            title: "Misc",
+            caption: "Unorganized thoughts and experiments.",
+            tags: ["Photos"],
+            link: "https://photos.app.goo.gl/JpsPJRpqR5qjNt149",
+          }
+        ]
+      }
+    ];
+
+    /* ───────────────────────────────────────────────────────────
+       RENDERER — no need to edit below unless customizing layout
+    ─────────────────────────────────────────────────────────── */
+    const root = document.getElementById('gallery-root');
+
+    PROJECTS.forEach((proj, pi) => {
+      const sec = document.createElement('section');
+      sec.className = 'project-section reveal';
+      sec.dataset.category = proj.tag;
+
+      const photosHTML = proj.photos.map((ph, phi) => {
+        const imgContent = ph.src
+          ? `<img src="${ph.src}" alt="${ph.title}" loading="lazy">`
+          : `<div class="photo-placeholder" data-label="img ${proj.number}.${phi + 1}"></div>`;
+
+        const tagsHTML = ph.tags.map(t => `<span class="photo-tag">${t}</span>`).join('');
+        const featured = ph.featured ? ' featured' : '';
+        const linkAttr = ph.link ? ` data-link="${ph.link}"` : '';
+
+        return `
+      <div class="photo-card${featured}"
+           data-section="${proj.title}"
+           data-title="${ph.title}"
+           data-caption="${ph.caption.replace(/"/g, '&quot;')}"
+           data-tags="${ph.tags.join(',')}"
+           data-src="${ph.src}"${linkAttr}>
+        <div class="photo-wrap">${imgContent}</div>
+        <div class="photo-meta">
+          <p class="photo-title">${ph.title}</p>
+          <p class="photo-caption">${ph.caption}</p>
+          <div class="photo-tags">${tagsHTML}</div>
+        </div>
+      </div>`;
+      }).join('');
+
+      sec.innerHTML = `
+    <div class="section-header">
+      <span class="section-number">${proj.number}</span>
+      <h2 class="section-title">${proj.title}</h2>
+      <span class="section-tag">${proj.tagLabel}</span>
+    </div>
+    <p class="section-desc">${proj.description}</p>
+    <div class="photo-grid">${photosHTML}</div>`;
+
+      root.appendChild(sec);
+    });
+
+    /* filter logic */
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.project-section').forEach(sec => {
+          if (f === 'all' || sec.dataset.category === f) {
+            sec.classList.remove('hidden');
+          } else {
+            sec.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    /* lightbox */
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbSection = document.getElementById('lb-section');
+    const lbTitle = document.getElementById('lb-title');
+    const lbCaption = document.getElementById('lb-caption');
+    const lbTags = document.getElementById('lb-tags');
+
+    function openLightbox(card) {
+      lbSection.textContent = card.dataset.section;
+      lbTitle.textContent = card.dataset.title;
+      lbCaption.textContent = card.dataset.caption;
+      lbTags.innerHTML = card.dataset.tags.split(',').map(t => `<span class="photo-tag">${t}</span>`).join('');
+      if (card.dataset.src) {
+        lbImg.src = card.dataset.src;
+        lbImg.style.display = 'block';
+      } else {
+        lbImg.style.display = 'none';
+      }
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.getElementById('gallery-root').addEventListener('click', e => {
+      const card = e.target.closest('.photo-card');
+      if (!card) return;
+      if (card.dataset.link) {
+        window.open(card.dataset.link, '_blank');
+        return;
+      }
+      openLightbox(card);
+    });
+
+    document.getElementById('lb-close').addEventListener('click', () => {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+
+    lb.addEventListener('click', e => {
+      if (e.target === lb) {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    /* scroll reveal */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+
+</html>

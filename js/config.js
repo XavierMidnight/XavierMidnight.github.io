@@ -12,6 +12,7 @@ export const DEFAULT_CONTENT = {
     logo: 'JJW',
     links: [
       { text: 'About', href: '#about' },
+      { text: 'Portfolio', href: 'portfolio.html' },
       { text: 'Contact', href: '#contact' },
       { text: 'GitHub', href: 'https://github.com/XavierMidnight', external: true },
     ],
@@ -24,6 +25,7 @@ export const DEFAULT_CONTENT = {
     subtitle:
       'Building interactive experiences, browser-based tools, and hardware integrations from scratch.',
     ctaPrimary: { text: 'About Me', href: '#about' },
+    ctaPortfolio: { text: 'Portfolio', href: 'portfolio.html' },
     ctaSecondary: { text: 'Get in Touch', href: '#contact' },
   },
 
@@ -57,7 +59,7 @@ export const DEFAULT_CONTENT = {
     description:
       "Have a project in mind, need a website built, or just want to talk about something you\u2019re building? Reach out.",
     links: [
-      { text: 'GitHub', href: 'https://github.com/XavierMidnight', style: 'primary', external: true },
+      { text: 'Email', href: 'mailto:jeffreyjameswood@gmail.com', style: 'primary', external: true },
     ],
   },
 
