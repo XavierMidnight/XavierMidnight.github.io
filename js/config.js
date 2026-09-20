@@ -4,7 +4,7 @@
  * on top at runtime.
  */
 export const DEFAULT_CONTENT = {
-  meta: { siteTitle: 'Jeffrey James Wood \u2014 Developer' },
+  meta: { siteTitle: 'Jeffrey James Wood — Software Engineer' },
 
   layout: {},
 
@@ -19,49 +19,57 @@ export const DEFAULT_CONTENT = {
   },
 
   hero: {
-    tag: 'Senior Software Developer',
+    tag: 'Senior Software Engineer',
     nameLine1: 'Jeffrey',
     nameLine2: 'James Wood',
     subtitle:
-      'Building interactive experiences, browser-based tools, and hardware integrations from scratch.',
-    ctaPrimary: { text: 'About Me', href: '#about' },
-    ctaPortfolio: { text: 'Portfolio', href: 'portfolio.html' },
+      'Twenty years building software, four of them leading the teams that build it. Right now: real-time AI systems that run on my own hardware.',
+    ctaPrimary: { text: 'See the Work', href: 'portfolio.html' },
+    ctaPortfolio: { text: 'What I Build', href: '#about' },
     ctaSecondary: { text: 'Get in Touch', href: '#contact' },
   },
 
   about: {
     label: 'About',
-    title: 'Curious by nature, creative by choice',
+    title: 'I build systems that run in the real world.',
     paragraphs: [
-      "I\u2019m a self-driven developer who builds things that live in browsers and beyond \u2014 gamified fitness apps, real-time audio visualizers, Twitch-powered LED controllers, and production business websites.",
-      "When I\u2019m not writing code, I\u2019m exploring new web APIs, tinkering with hardware, or helping local businesses build a stronger online presence.",
+      'Twenty years of shipping software — healthcare, federal contracting, cloud migrations, accessibility-compliant applications with real consequences. At Employers Health Network I shipped an external-facing health-plan platform that onboarded 200+ clients in its first month. At MUSC I built patient-tracking software that flagged medication misuse.',
+      'Four of those years as Technical Team Lead at Amyx and Credence — establishing an agile engineering team from scratch, hiring into it, and setting practices that held across multiple teams. Earlier: Booz Allen, Red Ventures, SPARC, Blackbaud. Started with apprenticeships at IBM and NASA Langley.',
+      'This year I have been building local AI infrastructure and the hardware around it. A voice pipeline that streams sentence-by-sentence so playback starts before the model finishes thinking, serving four custom ESP32 devices over a hand-rolled binary protocol. An autonomous agent that works my own Jira board — branches, commits, reviews, and reports back. A GPU scheduler that arbitrates between them.',
+      'The page you are looking at designs itself. Palette, typography, layout, and the shapes behind this text are generated from a seed in the URL — refresh and you get a different one.',
     ],
     skills: [
-      'HTML / CSS',
-      'JavaScript (ES6+)',
-      'Web Audio API',
-      'Canvas / Animation',
-      'Twitch API / Bots',
-      'Responsive Design',
-      'Git / GitHub Pages',
-      'Hardware Integration',
+      'JavaScript / TypeScript',
+      'Python / FastAPI',
+      'Node / Express',
+      'React / Next.js',
+      'C# / .NET',
+      'Java / Spring',
+      'C++ / ESP32 firmware',
+      'AWS / Azure',
+      'Docker',
+      'WebSockets / real-time',
+      'Local LLM + TTS pipelines',
+      'Team leadership',
     ],
     stats: [
-      { id: 'stat_1', number: '4+', label: 'Projects shipped' },
-      { id: 'stat_2', number: '3', label: 'Web APIs explored' },
-      { id: 'stat_3', number: '1', label: 'Business site deployed' },
+      { id: 'stat_1', number: '20', label: 'Years shipping software' },
+      { id: 'stat_2', number: '4', label: 'Years leading teams' },
+      { id: 'stat_3', number: '200+', label: 'Clients onboarded in month one' },
     ],
   },
 
   contact: {
     label: 'Contact',
-    title: "Let\u2019s work together",
+    title: 'Open to what is next.',
     description:
-      "Have a project in mind, need a website built, or just want to talk about something you\u2019re building? Reach out.",
+      'I am looking for my next role — ideally somewhere that builds real-time systems, AI infrastructure, or hardware that talks to software. Happy to walk through any of this in detail.',
     links: [
       { text: 'Email', href: 'mailto:jeffreyjameswood@gmail.com', style: 'primary', external: true },
+      { text: 'LinkedIn', href: 'https://www.linkedin.com/in/j-j-wood-26a66b5/', external: true },
+      { text: 'GitHub', href: 'https://github.com/XavierMidnight', external: true },
     ],
   },
 
-  footer: { text: '\u00a9 2026 Jeffrey James Wood' },
+  footer: { text: '© 2026 Jeffrey James Wood' },
 };

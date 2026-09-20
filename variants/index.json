@@ -1,15 +1,4 @@
 {
-  "_comment": "Variants the site may render instead of the defaults in js/config.js. One is chosen at random per pageview unless ?variant=<name> is given. Same shape as an exported content.json, so the export button produces a valid variant.",
-  "variants": [
-    {
-      "name": "playful",
-      "file": "variants/playful.json",
-      "description": "Informal, hobbyist framing"
-    },
-    {
-      "name": "direct",
-      "file": "variants/direct.json",
-      "description": "Formal, professional framing"
-    }
-  ]
+  "_comment": "Alternate content the site may render instead of the defaults in js/config.js. One is chosen at random per pageview unless ?variant=<name> is given. Same shape as an exported content.json, so the export button produces a valid variant. Empty for now: the two samples here were written against the old copy and would have shadowed the rewrite.",
+  "variants": []
 }
