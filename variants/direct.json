@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "siteTitle": "Jeffrey James Wood — Developer"
+  },
+  "layout": {},
+  "nav": {
+    "logo": "JJW",
+    "links": [
+      {
+        "text": "About",
+        "href": "#about"
+      },
+      {
+        "text": "Contact",
+        "href": "#contact"
+      },
+      {
+        "text": "GitHub",
+        "href": "https://github.com/XavierMidnight",
+        "external": true
+      }
+    ]
+  },
+  "hero": {
+    "tag": "Senior Software Developer",
+    "nameLine1": "Jeffrey",
+    "nameLine2": "James Wood",
+    "subtitle": "Full-stack engineer. Distributed systems, real-time audio, and hardware integration.",
+    "ctaPrimary": {
+      "text": "Experience",
+      "href": "#about"
+    },
+    "ctaSecondary": {
+      "text": "Get in Touch",
+      "href": "#contact"
+    }
+  },
+  "about": {
+    "label": "About",
+    "title": "Twenty years of shipping production software.",
+    "paragraphs": [
+      "I’m a self-driven developer who builds things that live in browsers and beyond — gamified fitness apps, real-time audio visualizers, Twitch-powered LED controllers, and production business websites.",
+      "When I’m not writing code, I’m exploring new web APIs, tinkering with hardware, or helping local businesses build a stronger online presence."
+    ],
+    "skills": [
+      "HTML / CSS",
+      "JavaScript (ES6+)",
+      "Web Audio API",
+      "Canvas / Animation",
+      "Twitch API / Bots",
+      "Responsive Design",
+      "Git / GitHub Pages",
+      "Hardware Integration"
+    ],
+    "stats": [
+      {
+        "id": "stat_1",
+        "number": "4+",
+        "label": "Projects shipped"
+      },
+      {
+        "id": "stat_2",
+        "number": "3",
+        "label": "Web APIs explored"
+      },
+      {
+        "id": "stat_3",
+        "number": "1",
+        "label": "Business site deployed"
+      }
+    ]
+  },
+  "contact": {
+    "label": "Contact",
+    "title": "Let’s work together",
+    "description": "Have a project in mind, need a website built, or just want to talk about something you’re building? Reach out.",
+    "links": [
+      {
+        "text": "GitHub",
+        "href": "https://github.com/XavierMidnight",
+        "style": "primary",
+        "external": true
+      }
+    ]
+  },
+  "footer": {
+    "text": "© 2026 Jeffrey James Wood"
+  }
+}

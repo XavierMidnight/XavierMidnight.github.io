@@ -12,6 +12,7 @@ import { Editors } from './editors.js';
 import { Effects } from './effects.js';
 import { ParticleSystem } from './particles.js';
 import { DarkMode } from './dark-mode.js';
+import { Variants } from './variants.js';
 
 // ── create instances ────────────────────────────────────
 
@@ -24,23 +25,29 @@ const editors = new Editors(contentManager, renderer, editMode, dragPosition);
 const effects = new Effects();
 const particles = new ParticleSystem();
 const darkMode = new DarkMode();
+const variants = new Variants();
 
 // ── boot ────────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   saveIndicator.init();
   darkMode.init();
 
-  const content = contentManager.getContent();
-  renderer.renderAll(content);
+  const variantContent = await variants.resolve();
+  renderer.renderAll(variantContent ?? contentManager.getContent());
 
   particles.init();
   effects.initParallax();
   effects.initCounters();
   effects.typeSubtitle();
 
-  editMode.init();
-  editMode.activate();
+  // Editing writes to the same localStorage key the owner's real content lives
+  // in, so a variant must not be editable — saving one would overwrite the
+  // real site with a throwaway.
+  if (!variants.active) {
+    editMode.init();
+    editMode.activate();
+  }
 });
 
 // ── event delegation ────────────────────────────────────
