@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Jeffrey James Wood — Career Timeline. Twenty years from controls programming to local AI infrastructure.">
+  <title>Jeffrey James Wood — Career Timeline</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body.page-timeline .nav-logo .nav-logo-sub {
+      font-weight: 600;
+      color: var(--text-2);
+    }
+
+    body.page-timeline .nav-links a.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    body.page-timeline .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .timeline-hero {
+      padding: calc(var(--nav-h) + 4.5rem) var(--pad) 3rem;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .timeline-hero .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .timeline-hero .hero-eyebrow::before {
+      content: '';
+      width: 1.75rem;
+      height: 2px;
+      background: var(--blue);
+      border-radius: 2px;
+    }
+
+    .timeline-hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+    }
+
+    .timeline-hero .hero-sub {
+      font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+      color: var(--text-2);
+      max-width: 560px;
+      line-height: 1.75;
+    }
+
+    .timeline-page-wrap {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 var(--pad) 6rem;
+    }
+
+    .timeline-footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem var(--pad);
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    .timeline-footer a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .timeline-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body class="page-timeline">
+
+  <!-- NAV (matches index structure / main.css) -->
+  <nav id="nav" class="nav">
+    <div class="container nav-inner">
+      <a class="nav-logo" href="index.html">JJW<span class="nav-logo-sub"> / Timeline</span></a>
+      <button class="nav-toggle" type="button" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="timeline.html" class="active">Timeline</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="timeline-hero">
+    <p class="hero-eyebrow">Career — 2004–Present</p>
+    <h1>Twenty years, one thread.</h1>
+    <p class="hero-sub">From controls programming on HVAC building systems to local AI infrastructure running on my own hardware — the roles in between.</p>
+  </section>
+
+  <div class="timeline-page-wrap">
+    <div class="timeline-track" id="timeline-root"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="timeline-footer">
+    <a href="index.html">← Back to jeffreyjameswood.com</a>
+    &nbsp;·&nbsp; Career Timeline
+  </footer>
+
+  <script type="module">
+    import { DEFAULT_CONTENT } from './js/config.js';
+
+    const root = document.getElementById('timeline-root');
+    root.innerHTML = DEFAULT_CONTENT.timeline.entries
+      .map(
+        (e) => `
+      <div class="timeline-entry">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">${e.year}</div>
+          <h3 class="timeline-role">${e.title}</h3>
+          <div class="timeline-org">${e.org}</div>
+          <p class="timeline-desc">${e.description}</p>
+        </div>
+      </div>`,
+      )
+      .join('');
+  </script>
+</body>
+
+</html>

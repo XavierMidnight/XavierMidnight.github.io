@@ -28,7 +28,11 @@ export class ContentManager {
         if (h && !h.ctaPortfolio) {
           h.ctaPortfolio = structuredClone(DEFAULT_CONTENT.hero.ctaPortfolio);
         }
+        if (!this.#content.timeline) {
+          this.#content.timeline = structuredClone(DEFAULT_CONTENT.timeline);
+        }
         this.#ensureNavPortfolioLink();
+        this.#ensureNavTimelineLink();
         return this.#content;
       }
     } catch { /* corrupt data — fall through to defaults */ }
@@ -82,7 +86,11 @@ export class ContentManager {
           if (h && !h.ctaPortfolio) {
             h.ctaPortfolio = structuredClone(DEFAULT_CONTENT.hero.ctaPortfolio);
           }
+          if (!this.#content.timeline) {
+            this.#content.timeline = structuredClone(DEFAULT_CONTENT.timeline);
+          }
           this.#ensureNavPortfolioLink();
+          this.#ensureNavTimelineLink();
           localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
           resolve(data);
         } catch {
@@ -105,6 +113,21 @@ export class ContentManager {
     const aboutIdx = links.findIndex((l) => l && l.href === '#about');
     const insertAt = aboutIdx >= 0 ? aboutIdx + 1 : 0;
     links.splice(insertAt, 0, { text: 'Portfolio', href: 'portfolio.html' });
+  }
+
+  /** Insert Timeline after Portfolio when missing (older saved / imported JSON). */
+  #ensureNavTimelineLink() {
+    const links = this.#content?.nav?.links;
+    if (!Array.isArray(links)) return;
+    const hasTimeline = links.some(
+      (l) => l && typeof l.href === 'string' && l.href.split('?')[0].endsWith('timeline.html'),
+    );
+    if (hasTimeline) return;
+    const portfolioIdx = links.findIndex(
+      (l) => l && typeof l.href === 'string' && l.href.split('?')[0].endsWith('portfolio.html'),
+    );
+    const insertAt = portfolioIdx >= 0 ? portfolioIdx + 1 : links.length;
+    links.splice(insertAt, 0, { text: 'Timeline', href: 'timeline.html' });
   }
 
   /** Wipe localStorage and return a fresh copy of defaults. */

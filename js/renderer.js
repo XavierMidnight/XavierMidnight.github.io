@@ -14,6 +14,7 @@ export class Renderer {
     document.title = content.meta.siteTitle;
     this.renderNav(content.nav);
     this.renderHero(content.hero);
+    this.renderTimeline(content.timeline);
     this.renderAbout(content.about);
     this.renderContact(content.contact);
     this.renderFooter(content.footer);
@@ -175,6 +176,26 @@ export class Renderer {
         </div>
         <div class="stats-row" id="stats-row">${stats}</div>
         <button class="edit-only add-btn" data-action="add-stat" style="margin-top:.75rem">+ Stat</button>
+      </div>`;
+  }
+
+  renderTimeline(timeline) {
+    const chip = (e) => `
+      <div class="tl-chip">
+        <span class="tl-chip-year">${esc(e.year)}</span>
+        <span class="tl-chip-role">${esc(e.title)}</span>
+        <span class="tl-chip-org">${esc(e.org)}</span>
+      </div>`;
+    const oneLap = timeline.entries.map(chip).join('<span class="tl-chip-sep">·</span>');
+    const chips = [oneLap, oneLap].join('<span class="tl-chip-sep">·</span>');
+
+    document.getElementById('timeline').innerHTML = `
+      <div class="tl-rail-inner">
+        <span class="tl-rail-label" data-path="timeline.label" data-pos-key="timeline.label">${esc(timeline.label)}</span>
+        <div class="tl-rail-viewport">
+          <div class="tl-rail-track">${chips}</div>
+        </div>
+        <a href="timeline.html" class="tl-rail-link">Full timeline →</a>
       </div>`;
   }
 
