@@ -3,8 +3,12 @@
  * (mirrors index behavior from renderer.js + app.js)
  */
 import { DarkMode } from './dark-mode.js';
+import { applyGenome, DEFAULT_GENOME } from './style-genome.js';
 
-const darkMode = new DarkMode();
+// Dark-mode colors come from re-deriving the default genome with `dark`
+// flipped, same mechanism as the main page — main.css no longer hardcodes them.
+applyGenome(DEFAULT_GENOME);
+const darkMode = new DarkMode(() => applyGenome(DEFAULT_GENOME));
 darkMode.init();
 
 const nav = document.getElementById('nav');

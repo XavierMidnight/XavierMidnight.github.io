@@ -189,7 +189,8 @@ export class Renderer {
     const oneLap = timeline.entries.map(chip).join('<span class="tl-chip-sep">·</span>');
     const chips = [oneLap, oneLap].join('<span class="tl-chip-sep">·</span>');
 
-    document.getElementById('timeline').innerHTML = `
+    const rail = document.getElementById('timeline');
+    rail.innerHTML = `
       <div class="tl-rail-inner">
         <span class="tl-rail-label" data-path="timeline.label" data-pos-key="timeline.label">${esc(timeline.label)}</span>
         <div class="tl-rail-viewport">
@@ -197,6 +198,19 @@ export class Renderer {
         </div>
         <a href="timeline.html" class="tl-rail-link">Full timeline →</a>
       </div>`;
+    this.#reserveTimelineHeight(rail);
+  }
+
+  /**
+   * The rail is fixed to the bottom of the viewport, so the page needs its
+   * own padding to keep content from scrolling underneath it. Its height
+   * isn't fixed — font size, padding and density all move with the active
+   * genome — so it's measured after render rather than guessed in CSS.
+   */
+  #reserveTimelineHeight(rail) {
+    const set = () => document.documentElement.style.setProperty('--tl-h', `${rail.offsetHeight}px`);
+    set();
+    new ResizeObserver(set).observe(rail);
   }
 
   renderContact(contact) {

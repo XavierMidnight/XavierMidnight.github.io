@@ -14,6 +14,7 @@ import { ParticleSystem } from './particles.js';
 import { DarkMode } from './dark-mode.js';
 import { Variants } from './variants.js';
 import { Shuffler } from './shuffler.js';
+import { applyGenome, DEFAULT_GENOME } from './style-genome.js';
 
 // ── create instances ────────────────────────────────────
 
@@ -25,8 +26,13 @@ const editMode = new EditMode(contentManager, renderer, saveIndicator, dragPosit
 const editors = new Editors(contentManager, renderer, editMode, dragPosition);
 const effects = new Effects();
 const particles = new ParticleSystem();
-const darkMode = new DarkMode();
 const variants = new Variants();
+// Generated palettes bake dark-vs-light into inline :root styles, so flipping
+// body.dark has no visible effect until the active genome is re-derived
+// against the new mode.
+const darkMode = new DarkMode(() => {
+  applyGenome(variants.genome ?? DEFAULT_GENOME);
+});
 
 // ── boot ────────────────────────────────────────────────
 
@@ -34,7 +40,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   saveIndicator.init();
   darkMode.init();
 
+  // No ?style= param still needs a genome applied — otherwise the site runs
+  // on main.css's static :root fallback, which ignores body.dark entirely.
   const styleGenome = variants.applyStyle();
+  if (!styleGenome) applyGenome(DEFAULT_GENOME);
   const variantContent = await variants.resolve();
   renderer.renderAll(variantContent ?? contentManager.getContent());
   // After renderAll: the renderers replace each section's innerHTML, and

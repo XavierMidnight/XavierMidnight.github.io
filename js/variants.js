@@ -147,7 +147,8 @@ export class Variants {
    * observer.
    */
   applyAll(seed) {
-    applyGenome(randomGenome(seed));
+    this.#genome = randomGenome(seed);
+    applyGenome(this.#genome);
     const moved = applyStructure(randomStructure(seed));
     applyDecor(randomDecor(seed));
     this.#canvasRunner?.stop();

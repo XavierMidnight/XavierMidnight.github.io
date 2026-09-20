@@ -47,6 +47,7 @@ body {
   line-height: var(--body-leading, 1.75);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  padding-bottom: var(--tl-h, 0px);
 }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
@@ -160,7 +161,7 @@ h3 { font-size: var(--h3-size, 1.15rem); }
   border-radius: 50%;
   background: var(--blue-light);
   top: -8%; right: -6%;
-  box-shadow: 20px 20px 0 rgba(0,88,163,0.06);
+  box-shadow: 20px 20px 0 color-mix(in srgb, var(--blue) 6%, transparent);
   animation: shape-float 18s ease-in-out infinite;
 }
 .hero-shape-rect {
@@ -168,7 +169,7 @@ h3 { font-size: var(--h3-size, 1.15rem); }
   background: var(--yellow-soft); border-radius: 8px;
   bottom: 18%; right: 18%;
   transform: rotate(12deg);
-  box-shadow: 8px 8px 0 rgba(255,218,26,0.25);
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--yellow) 25%, transparent);
   animation: shape-float 22s ease-in-out infinite; animation-delay: -8s;
 }
 .hero-shape-line {
@@ -181,7 +182,7 @@ h3 { font-size: var(--h3-size, 1.15rem); }
   width: 14px; height: 14px;
   background: var(--yellow); border-radius: 50%;
   bottom: 30%; left: 12%;
-  box-shadow: 4px 4px 0 rgba(0,88,163,0.1);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--blue) 10%, transparent);
   opacity: 0.6;
 }
 .hero-inner { position: relative; z-index: 1; max-width: 640px; }
@@ -189,7 +190,7 @@ h3 { font-size: var(--h3-size, 1.15rem); }
   display: inline-block;
   font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--blue); background: var(--blue-light);
-  border: 1px solid rgba(0,88,163,0.12);
+  border: 1px solid color-mix(in srgb, var(--blue) 12%, transparent);
   padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.5rem;
 }
 .hero-name span { display: block; }
@@ -223,7 +224,7 @@ h3 { font-size: var(--h3-size, 1.15rem); }
 }
 .skill-chip:hover {
   border-color: var(--blue); color: var(--blue);
-  box-shadow: 3px 3px 0 rgba(0,88,163,0.1);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--blue) 10%, transparent);
   transform: translate(-1px,-1px);
 }
 .stats-row { display: none; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3.5rem; }
@@ -239,13 +240,17 @@ h3 { font-size: var(--h3-size, 1.15rem); }
 .stat-label { font-size: 0.8rem; color: var(--text-3); margin-top: 0.2rem; }
 
 /* ═══════════════════════════════════════════
-   TIMELINE — ticker rail below hero
+   TIMELINE — sticky ticker rail, docked to the bottom of the viewport.
+   body.tl-h reserves the strip's height so page content never runs under it;
+   set from JS once the rendered rail's real height is known (font/density
+   vary with the active genome, so a fixed guess would drift).
    ═══════════════════════════════════════════ */
 #timeline {
-  padding: calc(var(--nav-h) + 0.9rem) 0 0.9rem !important;
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: 900;
+  padding: 0.9rem 0 !important;
   background: var(--bg-alt);
   border-top: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
 }
 .tl-rail-inner {
   display: flex; align-items: center; gap: 1.25rem;
@@ -418,15 +423,15 @@ body.edit-mode { padding-top: 48px; }
 body.edit-mode .nav { top: 48px; }
 body.edit-mode [contenteditable='plaintext-only'],
 body.edit-mode [contenteditable='true'] {
-  outline: 1.5px dashed rgba(0,88,163,0.3); outline-offset: 4px;
+  outline: 1.5px dashed color-mix(in srgb, var(--blue) 30%, transparent); outline-offset: 4px;
   border-radius: 3px; transition: outline-color 0.2s, background 0.2s;
   min-width: 20px; min-height: 1em;
 }
-body.edit-mode [contenteditable]:hover { outline-color: rgba(0,88,163,0.5); }
-body.edit-mode [contenteditable]:focus { outline: 2px solid var(--blue); outline-offset: 4px; background: rgba(0,88,163,0.03); }
-body.edit-mode #contact [contenteditable] { outline-color: rgba(255,218,26,0.35); }
-body.edit-mode #contact [contenteditable]:hover { outline-color: rgba(255,218,26,0.6); }
-body.edit-mode #contact [contenteditable]:focus { outline-color: var(--yellow); background: rgba(255,218,26,0.06); }
+body.edit-mode [contenteditable]:hover { outline-color: color-mix(in srgb, var(--blue) 50%, transparent); }
+body.edit-mode [contenteditable]:focus { outline: 2px solid var(--blue); outline-offset: 4px; background: color-mix(in srgb, var(--blue) 3%, transparent); }
+body.edit-mode #contact [contenteditable] { outline-color: color-mix(in srgb, var(--yellow) 35%, transparent); }
+body.edit-mode #contact [contenteditable]:hover { outline-color: color-mix(in srgb, var(--yellow) 60%, transparent); }
+body.edit-mode #contact [contenteditable]:focus { outline-color: var(--yellow); background: color-mix(in srgb, var(--yellow) 6%, transparent); }
 .edit-only { display: none !important; }
 body.edit-mode .edit-only { display: inline-flex !important; }
 
@@ -472,7 +477,7 @@ body.edit-mode .edit-only { display: inline-flex !important; }
 
 /* save toast */
 .save-toast {
-  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  position: fixed; bottom: calc(var(--tl-h, 0px) + 1.5rem); left: 50%; transform: translateX(-50%);
   padding: 0.5rem 1.2rem; border-radius: 100px;
   font-family: var(--mono); font-size: 0.72rem; z-index: 10002;
   transition: opacity 0.3s; opacity: 0; pointer-events: none;
@@ -484,7 +489,8 @@ body.edit-mode .edit-only { display: inline-flex !important; }
 
 /* gear button */
 .edit-gear {
-  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  /* Clears the fixed timeline rail sitting at the bottom of the viewport. */
+  position: fixed; bottom: calc(var(--tl-h, 0px) + 1.5rem); right: 1.5rem;
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06);
@@ -566,47 +572,25 @@ body.edit-mode .nav [data-pos-key] > .drag-handle {
 
 /* ═══════════════════════════════════════════
    DARK MODE
-   ═══════════════════════════════════════════ */
-body.dark {
-  --bg: #0f1219;
-  --bg-alt: #161b26;
-  --bg-card: #1c2233;
-  --blue-light: rgba(0,88,163,0.12);
-  --blue-soft: rgba(0,88,163,0.1);
-  --text: #e4e8f0;
-  --text-2: #9ca3b8;
-  --text-3: #5a6178;
-  --border: #2a3142;
-  --border-light: #232a3a;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-lg: 0 12px 28px rgba(0,0,0,0.5);
-  --shadow-offset: 6px 6px 0 rgba(0,88,163,0.08);
-  --shadow-offset-lg: 10px 10px 0 rgba(0,88,163,0.1);
-}
+   ═══════════════════════════════════════════
+   Colors are no longer hardcoded here: dark-mode.js re-derives whichever
+   genome is active (the default site's or a generated variant's) through
+   genomeToCSS with dark flipped, and writes the result as inline :root
+   properties, which these class rules can't outrank anyway. What's left here
+   is layout/decoration that isn't expressed as a custom property. */
 body.dark::before {
   background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
 }
 body.dark .nav.scrolled {
-  background: rgba(15,18,25,0.92);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
   box-shadow: 0 1px 0 var(--border);
 }
-body.dark .hero-shape-circle {
-  background: rgba(0,88,163,0.08);
-  box-shadow: 20px 20px 0 rgba(0,88,163,0.04);
-}
-body.dark .hero-shape-rect {
-  background: rgba(255,218,26,0.06);
-  box-shadow: 8px 8px 0 rgba(255,218,26,0.1);
-}
+body.dark .hero-shape-circle { box-shadow: 20px 20px 0 var(--blue-soft); }
+body.dark .hero-shape-rect { box-shadow: 8px 8px 0 var(--yellow-soft); }
 body.dark .hero-shape-dot { opacity: 0.3; }
-body.dark .hero-tag {
-  background: rgba(0,88,163,0.12);
-  border-color: rgba(0,88,163,0.2);
-}
-body.dark .skill-chip { box-shadow: 2px 2px 0 rgba(0,88,163,0.1); }
-body.dark .skill-chip:hover { box-shadow: 3px 3px 0 rgba(0,88,163,0.15); }
-body.dark #contact { background: #00416f; }
+body.dark .hero-tag { border-color: color-mix(in srgb, var(--blue) 20%, transparent); }
+body.dark .skill-chip { box-shadow: 2px 2px 0 var(--blue-soft); }
+body.dark .skill-chip:hover { box-shadow: 3px 3px 0 var(--blue-soft); }
 body.dark .edit-gear {
   background: rgba(255,255,255,0.04);
   border-color: rgba(255,255,255,0.08);
@@ -617,7 +601,8 @@ body.dark .edit-gear {
 
 /* dark mode toggle */
 .dark-toggle {
-  position: fixed; bottom: 1.5rem; right: 4rem;
+  /* Clears the fixed timeline rail sitting at the bottom of the viewport. */
+  position: fixed; bottom: calc(var(--tl-h, 0px) + 1.5rem); right: 4rem;
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.06);
@@ -760,16 +745,57 @@ body.no-hero-shapes .hero-shapes { display: none; }
 }
 
 /* ── design shuffler ──────────────────────────────────────────────────────
-   Progress bar + prev/next across the top. Sits above the nav (1000) and the
-   left accent strip (9999). */
+   One pill holding prev/next controls, with the progress bar as its own
+   bottom edge. Sits above the nav (1000) and the left accent strip (9999). */
 
 .shuffler {
-  position: fixed; top: 0; left: 0; right: 0;
+  position: fixed; top: 0; left: 50%;
+  transform: translateX(-50%);
   z-index: 10000;
-  pointer-events: none;
+  /* auto, not none: this box still needs to catch the hover that reveals the
+     tucked-away panel. The pill inside is the only thing that intercepts
+     clicks either way. */
+  pointer-events: auto;
   font-family: var(--mono);
 }
+
+.shuffler-controls {
+  pointer-events: auto;
+  position: relative;
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.3rem 0.7rem;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--blue);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--blue) 45%, transparent);
+  overflow: hidden;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  opacity: 1;
+  transition: opacity 0.25s, transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  transform: translateY(0);
+}
+
+/* Idle (paused by reading/interaction) tucks the whole panel away like a
+   sidepanel closing upward; the running bar is what brings it back down.
+   Hovering the strip where it would be overrides the tuck-away so the mouse
+   can still reach prev/next and the seed without waiting for activity to
+   stop elsewhere on the page. */
+.shuffler.paused .shuffler-controls {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.shuffler.paused:hover .shuffler-controls {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 .shuffler-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
   height: 2px;
   background: color-mix(in srgb, var(--text) 10%, transparent);
 }
@@ -780,26 +806,6 @@ body.no-hero-shapes .hero-shapes { display: none; }
   transition: transform 0.1s linear;
 }
 .shuffler.paused .shuffler-fill { background: var(--text-3); }
-
-.shuffler-controls {
-  pointer-events: auto;
-  position: absolute; top: 2px; left: 50%;
-  transform: translateX(-50%);
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.3rem 0.7rem;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-  font-size: 0.62rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  opacity: 0.55;
-  transition: opacity 0.25s;
-}
-.shuffler-controls:hover { opacity: 1; }
 .shuffler-label { white-space: nowrap; }
 .shuffler-seed { color: var(--text-2); opacity: 0.7; }
 

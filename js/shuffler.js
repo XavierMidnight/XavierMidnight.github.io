@@ -126,7 +126,6 @@ export class Shuffler {
     const root = document.createElement('div');
     root.className = 'shuffler';
     root.innerHTML = `
-      <div class="shuffler-bar"><span class="shuffler-fill"></span></div>
       <div class="shuffler-controls">
         <button class="shuffler-btn" data-shuffle="prev" title="Previous design" aria-label="Previous design">‹</button>
         <span class="shuffler-swatch" data-shuffle-prev aria-hidden="true"></span>
@@ -134,6 +133,7 @@ export class Shuffler {
         <span class="shuffler-seed" title="Seed for this design"></span>
         <span class="shuffler-swatch" data-shuffle-next aria-hidden="true"></span>
         <button class="shuffler-btn" data-shuffle="next" title="Next design" aria-label="Next design">›</button>
+        <div class="shuffler-bar"><span class="shuffler-fill"></span></div>
       </div>`;
     document.body.appendChild(root);
 

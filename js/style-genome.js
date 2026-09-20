@@ -49,6 +49,33 @@ export const DISPLAY_STACKS = [
   "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif",
 ];
 
+/**
+ * The default site's own palette, expressed as a genome instead of hardcoded
+ * hex values. Light and dark mode are the same genome run through
+ * genomeToCSS with `dark` flipped — one derivation for the stock site and
+ * every generated variant, instead of a second hand-picked color set that
+ * dark mode had to maintain in parallel.
+ */
+export const DEFAULT_GENOME = {
+  seed: 0,
+  hue: 208,
+  accentOffset: 150,
+  saturation: 70,
+  lightness: 32,
+  contrast: 0.9,
+  radius: 20,
+  density: 1,
+  fontIndex: 0,
+  displayIndex: 0,
+  typeScale: 1.3,
+  displayWeight: 700,
+  displayTracking: 0,
+  displayCase: 'none',
+  bodyLeading: 1.6,
+  shadowDepth: 0.15,
+  borderWeight: 0.2,
+};
+
 /** A genome: the small set of genes everything else derives from. */
 export function randomGenome(seed = Math.floor(Math.random() * 1e9)) {
   const r = rng(seed);
@@ -78,9 +105,16 @@ export function randomGenome(seed = Math.floor(Math.random() * 1e9)) {
   };
 }
 
-/** Expand a genome into the CSS custom properties main.css already consumes. */
-export function genomeToCSS(g) {
-  const dark = g.lightness < 50;
+/**
+ * Expand a genome into the CSS custom properties main.css already consumes.
+ *
+ * The dark/light toggle is the visitor's explicit choice, so it wins over
+ * whatever the lightness gene rolled — a variant should get a dark palette
+ * derived from its own hue/saturation, not silently ignore body.dark and
+ * make the toggle button appear broken.
+ */
+export function genomeToCSS(g, forceDark = document.body.classList.contains('dark')) {
+  const dark = forceDark != null ? forceDark : g.lightness < 50;
   const accent = (g.hue + g.accentOffset) % 360;
   const sat = g.saturation;
 

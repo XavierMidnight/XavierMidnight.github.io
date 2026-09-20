@@ -5,6 +5,12 @@
 export class DarkMode {
   #key = 'jjw_dark_mode';
   #btn = null;
+  #onChange;
+
+  /** @param {() => void} onChange  called after the body.dark class flips */
+  constructor(onChange = () => {}) {
+    this.#onChange = onChange;
+  }
 
   init() {
     this.#createToggle();
@@ -18,6 +24,7 @@ export class DarkMode {
     document.body.classList.toggle('dark');
     localStorage.setItem(this.#key, document.body.classList.contains('dark'));
     this.#updateIcon();
+    this.#onChange();
   }
 
   #createToggle() {

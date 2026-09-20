@@ -212,7 +212,7 @@ export class EditMode {
     this.#gear = document.createElement('button');
     this.#gear.className = 'edit-gear';
     this.#gear.setAttribute('aria-label', 'Toggle edit mode');
-    this.#gear.textContent = '\u2699';
+    this.#gear.textContent = '\u03c0';
     this.#gear.setAttribute('data-action', 'toggle-edit');
     document.body.appendChild(this.#gear);
   }
