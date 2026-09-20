@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+._*
+
+# macOS Finder URL bookmarks — colons in their names are illegal on Windows,
+# which makes the repo impossible to check out there. Album URLs live in
+# public/portfolio/photo-album-links.json instead.
+*.webloc
+
+# Claude Code session config
+.claude/
