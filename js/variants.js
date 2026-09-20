@@ -139,6 +139,25 @@ export class Variants {
   }
 
   /**
+   * Apply every generative layer for one seed.
+   *
+   * The shuffler needs to swap designs after boot, and doing that by calling
+   * the four appliers in the right order from two places invites them drifting
+   * apart. Returns whether sections moved, so the caller can re-arm the reveal
+   * observer.
+   */
+  applyAll(seed) {
+    applyGenome(randomGenome(seed));
+    const moved = applyStructure(randomStructure(seed));
+    applyDecor(randomDecor(seed));
+    this.#canvasRunner?.stop();
+    this.#canvas = randomCanvas(seed);
+    this.#canvasRunner = new GenerativeCanvas();
+    this.#canvasRunner.start(this.#canvas);
+    return moved;
+  }
+
+  /**
    * Restyle the page from a generated genome.
    *
    * Style is a separate axis from content: ?style=random rerolls the palette,

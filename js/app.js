@@ -13,6 +13,7 @@ import { Effects } from './effects.js';
 import { ParticleSystem } from './particles.js';
 import { DarkMode } from './dark-mode.js';
 import { Variants } from './variants.js';
+import { Shuffler } from './shuffler.js';
 
 // ── create instances ────────────────────────────────────
 
@@ -60,6 +61,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // in, so a variant must not be editable — saving one would overwrite the
   // real site with a throwaway.
   if (!variants.active) editMode.init();
+
+  // The generative layers only ran for visitors who knew to type ?style=random,
+  // which is nobody. Unless a specific seed was asked for, cycle designs with a
+  // visible timer so the page demonstrates itself.
+  const pinned = ['style', 'layout', 'decor', 'canvas'].some(k => new URLSearchParams(location.search).has(k));
+  if (!pinned && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    new Shuffler((seed) => {
+      if (variants.applyAll(seed)) renderer.setupScrollAnimations();
+    }).start();
+  }
 });
 
 // ── event delegation ────────────────────────────────────
