@@ -356,6 +356,14 @@ body.dark .timeline-dot { box-shadow: 0 0 0 4px var(--bg); }
   box-shadow: 6px 6px 0 rgba(0,0,0,0.18);
   transform: translate(-1px,-1px);
 }
+#contact .btn-outline {
+  color: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.35);
+}
+#contact .btn-outline:hover {
+  color: #fff;
+  border-color: var(--yellow);
+}
 
 /* ═══════════════════════════════════════════
    FOOTER

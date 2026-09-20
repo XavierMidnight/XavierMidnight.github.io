@@ -39,7 +39,7 @@ export function randomStructure(seed = Math.floor(Math.random() * 1e9)) {
     hero: pick(HERO_ARRANGEMENTS),
     about: pick(ABOUT_ARRANGEMENTS),
     contact: pick(CONTACT_ARRANGEMENTS),
-    navPosition: pick(['top', 'top', 'hidden']),
+    navPosition: 'top',
     heroShapes: r() > 0.25,
   };
 }
