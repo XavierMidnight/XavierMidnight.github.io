@@ -76,9 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // visible timer so the page demonstrates itself.
   const pinned = ['style', 'layout', 'decor', 'canvas'].some(k => new URLSearchParams(location.search).has(k));
   if (!pinned && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-    new Shuffler((seed) => {
-      if (variants.applyAll(seed)) renderer.setupScrollAnimations();
-    }).start();
+    new Shuffler(variants, () => renderer.setupScrollAnimations()).start();
   }
 });
 

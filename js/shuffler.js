@@ -10,7 +10,29 @@
  * idle, and any interaction pauses it.
  */
 
+import { mixGenome } from './style-genome.js';
+
 const IDLE_BEFORE_RESUME_MS = 2500;
+// A full design change eases in over this long; periods shorter than it blend
+// continuously instead, one segment running straight into the next.
+const FULL_BLEND_MS = 1200;
+// Big changes run in sequence: fade the page out, blend and swap underneath,
+// then fade back in — so nothing visibly jumps.
+const VEIL_IN_MS = 350;
+const VEILED_BLEND_MS = 700;
+const VEIL_OUT_MS = 450;
+// Stopping mid-blend decelerates over at least this long rather than freezing.
+const SETTLE_MS = 900;
+// Periods at or above this make full jumps; shorter ones step proportionally
+// less of the way, so fast shuffling is a drift and slow shuffling a reshuffle.
+const FULL_STEP_PERIOD_MS = 6000;
+
+const easeInOut = t => t * t * (3 - 2 * t);
+const easeOut = t => 1 - (1 - t) ** 3;
+const linear = t => t;
+const PERIOD_KEY = 'shuffler-period-ms';
+// Below ~10 swaps a second the page is a strobe rather than a design.
+const MIN_PERIOD_MS = 100;
 
 export class Shuffler {
   #history = [];
@@ -21,21 +43,40 @@ export class Shuffler {
   #lastTick = 0;
   #raf = null;
   #idleTimer = null;
-  #apply;
+  #blend = null;
+  // Peak fade of the last veiled change, and how far in the veil is now.
+  #veil = { fade: 0, level: 0 };
+  #variants;
+  #onMoved;
   #els = {};
 
   /**
-   * @param {(seed:number)=>void} apply  renders a seed
-   * @param {number} periodMs            time between automatic advances
+   * @param {import('./variants.js').Variants} variants  renders seeds and blends
+   * @param {()=>void} onMoved   called when sections were reordered
+   * @param {number} periodMs    time between automatic advances
    */
-  constructor(apply, periodMs = 12000) {
-    this.#apply = apply;
-    this.#period = periodMs;
+  constructor(variants, onMoved, periodMs = 12000) {
+    this.#variants = variants;
+    this.#onMoved = onMoved;
+    let saved = null;
+    try { saved = Number(localStorage.getItem(PERIOD_KEY)); } catch {}
+    this.#period = saved >= MIN_PERIOD_MS ? saved : periodMs;
+  }
+
+  setPeriod(ms) {
+    if (!Number.isFinite(ms)) return;
+    this.#period = Math.max(MIN_PERIOD_MS, ms);
+    try { localStorage.setItem(PERIOD_KEY, String(this.#period)); } catch {}
+    this.#els.root?.classList.toggle('fast', this.#period < 1000);
+    this.#syncSpeed();
   }
 
   start(firstSeed = Math.floor(Math.random() * 1e9)) {
     this.#build();
-    this.#go(firstSeed);
+    this.#history = [firstSeed];
+    this.#index = 0;
+    if (this.#variants.applyAll(firstSeed)) this.#onMoved();
+    this.#render();
     this.#bindActivity();
     this.#lastTick = performance.now();
     this.#raf = requestAnimationFrame(this.#tick);
@@ -45,37 +86,48 @@ export class Shuffler {
     if (this.#raf) cancelAnimationFrame(this.#raf);
     this.#raf = null;
     this.#els.root?.remove();
+    this.#els.veil?.remove();
   }
 
   // ── navigation ────────────────────────────────────────
 
-  next() {
+  /** A button press always goes all the way; only the timer takes partial steps. */
+  next(amount = 1) {
     // Stepping forward from mid-history replays what was already seen, so the
     // bar's "next" preview is truthful rather than a fresh roll each time.
     if (this.#index < this.#history.length - 1) {
       this.#index++;
-      this.#apply(this.#history[this.#index]);
     } else {
-      this.#go(Math.floor(Math.random() * 1e9));
+      this.#history = this.#history.slice(0, this.#index + 1);
+      this.#history.push(Math.floor(Math.random() * 1e9));
+      if (this.#history.length > 40) this.#history.shift();
+      this.#index = this.#history.length - 1;
     }
-    this.#elapsed = 0;
-    this.#render();
+    this.#toward(this.#history[this.#index], amount);
   }
 
   prev() {
     if (this.#index <= 0) return;
     this.#index--;
-    this.#apply(this.#history[this.#index]);
-    this.#elapsed = 0;
-    this.#render();
+    this.#toward(this.#history[this.#index], 1);
   }
 
-  #go(seed) {
-    this.#history = this.#history.slice(0, this.#index + 1);
-    this.#history.push(seed);
-    if (this.#history.length > 40) this.#history.shift();
-    this.#index = this.#history.length - 1;
-    this.#apply(seed);
+  #toward(seed, amount) {
+    // A blend cut off before its midpoint still owes its layout swap, or the
+    // page would keep the old structure under the new palette.
+    this.#commit();
+    const { from, to, fade, commit } = this.#variants.retarget(seed, amount);
+    const veiled = fade > 0;
+    const continuous = amount < 1 && this.#period < FULL_BLEND_MS;
+    if (veiled) this.#veil = { fade, level: this.#veil.level };
+    this.#blend = {
+      from, to, commit, veiled,
+      veil0: this.#veil.level,
+      t0: performance.now(),
+      dur: veiled ? VEILED_BLEND_MS : continuous ? this.#period : FULL_BLEND_MS,
+      ease: continuous ? linear : easeInOut,
+    };
+    this.#elapsed = 0;
     this.#render();
   }
 
@@ -84,15 +136,90 @@ export class Shuffler {
   #tick = (now) => {
     const dt = now - this.#lastTick;
     this.#lastTick = now;
+    if (this.#blend) this.#stepBlend(now);
     if (!this.#paused && !document.hidden) {
       this.#elapsed += dt;
-      if (this.#elapsed >= this.#period) this.next();
+      if (this.#elapsed >= this.#period) this.next(Math.min(1, this.#period / FULL_STEP_PERIOD_MS));
       else this.#setProgress(this.#elapsed / this.#period);
     }
     this.#raf = requestAnimationFrame(this.#tick);
   };
 
-  #pause() {
+  #stepBlend(now) {
+    const b = this.#blend;
+    const el = now - b.t0;
+    if (!b.veiled) {
+      const t = Math.min(1, el / b.dur);
+      const e = b.ease(t);
+      this.#variants.paint(mixGenome(b.from, b.to, e));
+      if (e >= 0.5) this.#commit();
+      // A veil left up by an interrupted change lifts alongside this blend.
+      this.#setVeil(b.veil0 * (1 - e));
+      if (t === 1) this.#blend = null;
+      return;
+    }
+    const inT = Math.min(1, el / VEIL_IN_MS);
+    const midT = Math.min(1, Math.max(0, (el - VEIL_IN_MS) / b.dur));
+    const outT = Math.min(1, Math.max(0, (el - VEIL_IN_MS - b.dur) / VEIL_OUT_MS));
+    if (inT < 1) {
+      this.#setVeil(b.veil0 + (1 - b.veil0) * easeInOut(inT));
+      return;
+    }
+    this.#commit();
+    this.#variants.paint(mixGenome(b.from, b.to, easeInOut(midT)));
+    this.#setVeil(1 - easeInOut(outT));
+    if (outT === 1) this.#blend = null;
+  }
+
+  #commit() {
+    const b = this.#blend;
+    if (!b?.commit) return;
+    const commit = b.commit;
+    b.commit = null;
+    if (commit()) this.#onMoved();
+  }
+
+  /** Wash the page toward its own background. */
+  #setVeil(level) {
+    this.#veil.level = level;
+    const veil = this.#els.veil;
+    if (!veil) return;
+    veil.style.background = `color-mix(in srgb, var(--bg) ${Math.round(this.#veil.fade * level * 100)}%, transparent)`;
+    veil.hidden = level < 0.01;
+  }
+
+  /**
+   * Coast to a stop: finish the blend in flight from wherever it is now,
+   * decelerating, instead of freezing on a half-mixed frame.
+   */
+  #settle() {
+    const b = this.#blend;
+    // A veiled change is already a gentle out-and-in; cutting it short would
+    // leave the page hazed or skip the swap.
+    if (!b || b.veiled) return;
+    const now = performance.now();
+    const remaining = Math.max(0, b.dur - (now - b.t0));
+    this.#blend = {
+      from: this.#variants.genome,
+      to: b.to,
+      commit: b.commit,
+      veil0: this.#veil.level,
+      t0: now,
+      dur: Math.max(SETTLE_MS, remaining * 2),
+      ease: easeOut,
+    };
+  }
+
+  #resume() {
+    clearTimeout(this.#idleTimer);
+    this.#paused = false;
+    this.#els.root?.classList.remove('paused');
+  }
+
+  #pause(e) {
+    // Tuning the speed is how you watch the speed — it must not freeze it.
+    if (e?.target?.closest?.('.shuffler-speed')) return;
+    if (!this.#paused) this.#settle();
     this.#paused = true;
     this.#els.root?.classList.add('paused');
     clearTimeout(this.#idleTimer);
@@ -106,7 +233,7 @@ export class Shuffler {
     // Reading counts as activity. Anything that suggests attention on the page
     // holds the current design in place.
     for (const ev of ['scroll', 'pointerdown', 'keydown', 'wheel', 'touchstart']) {
-      window.addEventListener(ev, () => this.#pause(), { passive: true });
+      window.addEventListener(ev, (e) => this.#pause(e), { passive: true });
     }
     // A cursor resting on the page is not activity — listening to pointermove
     // directly meant a stationary mouse re-armed the pause forever and the
@@ -115,7 +242,7 @@ export class Shuffler {
     window.addEventListener('pointermove', (e) => {
       if (lastX !== null && Math.hypot(e.clientX - lastX, e.clientY - lastY) < 4) return;
       lastX = e.clientX; lastY = e.clientY;
-      this.#pause();
+      this.#pause(e);
     }, { passive: true });
     this.#els.root?.addEventListener('pointerenter', () => this.#pause());
   }
@@ -133,9 +260,19 @@ export class Shuffler {
         <span class="shuffler-seed" title="Seed for this design"></span>
         <span class="shuffler-swatch" data-shuffle-next aria-hidden="true"></span>
         <button class="shuffler-btn" data-shuffle="next" title="Next design" aria-label="Next design">›</button>
+        <label class="shuffler-speed" title="Seconds between designs">
+          <input type="range" min="0" max="10" step="0.1" aria-label="Seconds between designs">
+          <input type="number" min="0.1" step="0.1" aria-label="Seconds between designs">s
+        </label>
         <div class="shuffler-bar"><span class="shuffler-fill"></span></div>
       </div>`;
     document.body.appendChild(root);
+    // One overlay under the pill fades everything beneath it, canvas and
+    // decor included, without touching each section's own opacity.
+    const veil = document.createElement('div');
+    veil.className = 'shuffler-veil';
+    veil.hidden = true;
+    document.body.appendChild(veil);
 
     this.#els = {
       root,
@@ -144,13 +281,33 @@ export class Shuffler {
       prevSwatch: root.querySelector('[data-shuffle-prev]'),
       nextSwatch: root.querySelector('[data-shuffle-next]'),
       prevBtn: root.querySelector('[data-shuffle="prev"]'),
+      veil,
+      range: root.querySelector('.shuffler-speed [type=range]'),
+      secs: root.querySelector('.shuffler-speed [type=number]'),
     };
+
+    const onSpeed = (e) => {
+      const s = parseFloat(e.target.value);
+      if (!Number.isFinite(s)) return;
+      this.setPeriod(s * 1000);
+      this.#resume();
+    };
+    this.#els.range.addEventListener('input', onSpeed);
+    this.#els.secs.addEventListener('change', onSpeed);
+    root.classList.toggle('fast', this.#period < 1000);
+    this.#syncSpeed();
 
     root.addEventListener('click', (e) => {
       const act = e.target.closest('[data-shuffle]')?.dataset.shuffle;
       if (act === 'next') this.next();
       if (act === 'prev') this.prev();
     });
+  }
+
+  #syncSpeed() {
+    const secs = +(this.#period / 1000).toFixed(2);
+    if (this.#els.range) this.#els.range.value = Math.min(10, secs);
+    if (this.#els.secs && document.activeElement !== this.#els.secs) this.#els.secs.value = secs;
   }
 
   #setProgress(f) {

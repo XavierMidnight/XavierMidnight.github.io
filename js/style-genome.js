@@ -191,3 +191,22 @@ export function applyGenome(g) {
   for (const [prop, value] of Object.entries(css)) root.style.setProperty(prop, value);
   return css;
 }
+
+// Genes that index into a list or name a keyword: halfway between two fonts
+// is not a font, so these switch at the midpoint instead of interpolating.
+const DISCRETE_GENES = ['fontIndex', 'displayIndex', 'displayWeight', 'displayCase'];
+
+/**
+ * A genome part-way from a to b. Hue takes the short way round the wheel so a
+ * 350→10 blend passes through red rather than the whole spectrum.
+ */
+export function mixGenome(a, b, t, discrete = t >= 0.5) {
+  const out = { ...a, seed: b.seed };
+  for (const k of Object.keys(b)) {
+    if (k === 'seed') continue;
+    if (DISCRETE_GENES.includes(k)) out[k] = discrete ? b[k] : a[k];
+    else if (k === 'hue') out.hue = (a.hue + ((((b.hue - a.hue) % 360) + 540) % 360 - 180) * t + 360) % 360;
+    else out[k] = a[k] + (b[k] - a[k]) * t;
+  }
+  return out;
+}

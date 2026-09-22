@@ -759,6 +759,13 @@ body.no-hero-shapes .hero-shapes { display: none; }
   font-family: var(--mono);
 }
 
+.shuffler-veil {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.shuffler-veil[hidden] { display: none; }
+
 .shuffler-controls {
   pointer-events: auto;
   position: relative;
@@ -785,11 +792,25 @@ body.no-hero-shapes .hero-shapes { display: none; }
    Hovering the strip where it would be overrides the tuck-away so the mouse
    can still reach prev/next and the seed without waiting for activity to
    stop elsewhere on the page. */
-.shuffler.paused .shuffler-controls {
+.shuffler.paused .shuffler-veil {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.shuffler-veil[hidden] { display: none; }
+
+.shuffler-controls {
   transform: translateY(-100%);
   pointer-events: none;
 }
-.shuffler.paused:hover .shuffler-controls {
+.shuffler.paused:hover .shuffler-veil {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.shuffler-veil[hidden] { display: none; }
+
+.shuffler-controls {
   transform: translateY(0);
   pointer-events: auto;
 }
@@ -806,6 +827,8 @@ body.no-hero-shapes .hero-shapes { display: none; }
   transition: transform 0.1s linear;
 }
 .shuffler.paused .shuffler-fill { background: var(--text-3); }
+/* At sub-second periods the eased fill never catches up to the real value. */
+.shuffler.fast .shuffler-fill { transition: none; }
 .shuffler-label { white-space: nowrap; }
 .shuffler-seed { color: var(--text-2); opacity: 0.7; }
 
@@ -826,6 +849,31 @@ body.no-hero-shapes .hero-shapes { display: none; }
   border: 1px solid var(--border);
 }
 
+.shuffler-speed {
+  display: flex; align-items: center; gap: 0.3rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--border);
+  color: var(--text-2);
+}
+.shuffler-speed [type=range] {
+  width: 70px; height: 12px;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+.shuffler-speed [type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+.shuffler-speed [type=number] {
+  width: 3.6em;
+  padding: 0 0.2rem;
+  text-align: right;
+  -moz-appearance: textfield;
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
 @media (max-width: 620px) {
   .shuffler-label { display: none; }
+  .shuffler-speed [type=range] { width: 48px; }
 }
