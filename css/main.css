@@ -764,8 +764,9 @@ body.no-hero-shapes .hero-shapes { display: none; }
   font-family: var(--mono);
 }
 
-/* Letters of the name while it glides (js/glide.js). Must out-rank
+/* Words and letters while they glide (js/glide.js). The name's must out-rank
    `.hero-name span` and its :first-child sizing, which target the lines. */
+span.glide-word { display: inline-block; white-space: nowrap; }
 .hero-name span.glide-word,
 .hero-name span.glide-ch {
   display: inline-block;
@@ -806,43 +807,11 @@ body.no-hero-shapes .hero-shapes { display: none; }
    Hovering the strip where it would be overrides the tuck-away so the mouse
    can still reach prev/next and the seed without waiting for activity to
    stop elsewhere on the page. */
-.shuffler.paused /* Letters of the name while it glides (js/glide.js). Must out-rank
-   `.hero-name span` and its :first-child sizing, which target the lines. */
-.hero-name span.glide-word,
-.hero-name span.glide-ch {
-  display: inline-block;
-  color: inherit; font-size: inherit; font-weight: inherit; letter-spacing: inherit;
-}
-.hero-name span.glide-word { white-space: nowrap; }
-
-.shuffler-veil {
-  position: fixed; inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-}
-.shuffler-veil[hidden] { display: none; }
-
-.shuffler-controls {
+.shuffler.paused .shuffler-controls {
   transform: translateY(-100%);
   pointer-events: none;
 }
-.shuffler.paused:hover /* Letters of the name while it glides (js/glide.js). Must out-rank
-   `.hero-name span` and its :first-child sizing, which target the lines. */
-.hero-name span.glide-word,
-.hero-name span.glide-ch {
-  display: inline-block;
-  color: inherit; font-size: inherit; font-weight: inherit; letter-spacing: inherit;
-}
-.hero-name span.glide-word { white-space: nowrap; }
-
-.shuffler-veil {
-  position: fixed; inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-}
-.shuffler-veil[hidden] { display: none; }
-
-.shuffler-controls {
+.shuffler.paused:hover .shuffler-controls {
   transform: translateY(0);
   pointer-events: auto;
 }
