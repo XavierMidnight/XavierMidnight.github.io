@@ -166,10 +166,13 @@ export class Variants {
    * change past a threshold, so small steps drift colour and proportion while
    * the words stay where they are, and only big steps rearrange the page.
    *
-   * The discrete swaps are deferred to `commit`, which the caller runs once
-   * the page has faded out, so a layout jump lands unseen rather than as a
-   * hard cut. `fade` (0–1 wash toward the background) is the peak, scaled by
-   * how jarring the biggest swap in this step is.
+   * The discrete swaps are deferred to `commit`, which the caller runs inside
+   * a glide or under a fade depending on `kind`:
+   *  - 'glide': layout or typeface changed — words travel to their new spots,
+   *    crossfading from the old type
+   *  - 'veil':  only the decor/canvas swapped — a light fade covers the pop
+   *  - 'drift': nothing discrete changed — a plain blend
+   * `fade` (0–1 wash toward the background) is the peak for that kind.
    */
   retarget(seed, amount) {
     const from = this.#genome ?? DEFAULT_GENOME;
@@ -178,8 +181,8 @@ export class Variants {
     const redecorate = amount >= 0.25;
     // Weight now morphs on the variable faces; a face or case flip still jumps.
     const refont = ['fontIndex', 'displayIndex', 'displayCase'].some(k => to[k] !== from[k]);
-    // Changes that move the words fade nearly out, so the swap isn't seen.
-    const fade = restructure || refont ? 0.85 : redecorate ? 0.2 : 0;
+    const kind = restructure || refont ? 'glide' : redecorate ? 'veil' : 'drift';
+    const fade = kind === 'veil' ? 0.2 : 0;
     const commit = () => {
       let moved = false;
       if (restructure) moved = applyStructure(randomStructure(seed));
@@ -192,7 +195,7 @@ export class Variants {
       }
       return moved;
     };
-    return { from, to, fade, commit };
+    return { from, to, fade, kind, redecorate, commit };
   }
 
   /** Paint one frame of a blend. */

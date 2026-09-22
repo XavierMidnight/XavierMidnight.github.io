@@ -10,7 +10,8 @@
  * idle, and any interaction pauses it.
  */
 
-import { mixGenome } from './style-genome.js';
+import { mixGenome, PAINT_GENES } from './style-genome.js';
+import { glide, crossfadeBackdrop, smoothReflow, resetReflow } from './glide.js';
 
 const IDLE_BEFORE_RESUME_MS = 2500;
 // A full design change eases in over this long; periods shorter than it blend
@@ -21,6 +22,8 @@ const FULL_BLEND_MS = 1200;
 const VEIL_IN_MS = 350;
 const VEILED_BLEND_MS = 700;
 const VEIL_OUT_MS = 450;
+// Layout and typeface changes glide the words to their new spots over this long.
+const GLIDE_MS = 900;
 // Stopping mid-blend decelerates over at least this long rather than freezing.
 const SETTLE_MS = 900;
 // Periods at or above this make full jumps; shorter ones step proportionally
@@ -44,6 +47,8 @@ export class Shuffler {
   #raf = null;
   #idleTimer = null;
   #blend = null;
+  // A change asked for while a glide is still moving waits for it to land.
+  #queued = null;
   // Peak fade of the last veiled change, and how far in the veil is now.
   #veil = { fade: 0, level: 0 };
   #variants;
@@ -113,19 +118,28 @@ export class Shuffler {
   }
 
   #toward(seed, amount) {
+    // Starting a glide over a running one re-measures text mid-flight and
+    // ghosts the ghosts; clicking through quickly lands on the design the
+    // label now shows once the current one settles.
+    if (this.#blend?.kind === 'glide') {
+      this.#queued = { seed, amount };
+      this.#elapsed = 0;
+      this.#render();
+      return;
+    }
     // A blend cut off before its midpoint still owes its layout swap, or the
     // page would keep the old structure under the new palette.
     this.#commit();
-    const { from, to, fade, commit } = this.#variants.retarget(seed, amount);
-    const veiled = fade > 0;
+    const { from, to, fade, kind, redecorate, commit } = this.#variants.retarget(seed, amount);
     const continuous = amount < 1 && this.#period < FULL_BLEND_MS;
-    if (veiled) this.#veil = { fade, level: this.#veil.level };
+    if (kind !== 'drift') this.#veil = { fade, level: this.#veil.level };
     this.#blend = {
-      from, to, commit, veiled,
+      from, to, commit, kind, redecorate,
       veil0: this.#veil.level,
       t0: performance.now(),
-      dur: veiled ? VEILED_BLEND_MS : continuous ? this.#period : FULL_BLEND_MS,
-      ease: continuous ? linear : easeInOut,
+      dur: kind === 'veil' ? VEILED_BLEND_MS : kind === 'glide' ? GLIDE_MS
+        : continuous ? this.#period : FULL_BLEND_MS,
+      ease: continuous && kind === 'drift' ? linear : easeInOut,
     };
     this.#elapsed = 0;
     this.#render();
@@ -148,10 +162,37 @@ export class Shuffler {
   #stepBlend(now) {
     const b = this.#blend;
     const el = now - b.t0;
-    if (!b.veiled) {
+    if (b.kind === 'glide') {
+      if (b.commit) {
+        // Everything that moves or reshapes text lands at once, inside the
+        // glide's before/after measurement, so the glide animates it and the
+        // crossfade covers the new letterforms. Blending those genes per frame
+        // instead re-laid out the page every frame (~25ms) and moved text out
+        // from under the glide after it had measured.
+        const kept = Object.fromEntries(PAINT_GENES.map(k => [k, b.from[k]]));
+        b.from = { ...b.to, ...kept };
+        resetReflow();
+        glide(() => {
+          this.#variants.paint(b.from);
+          this.#commit();
+        }, { duration: b.dur, redecorate: b.redecorate });
+      }
+      const e = b.ease(Math.min(1, el / b.dur));
+      this.#variants.paint(mixGenome(b.from, b.to, e, true));
+      this.#setVeil(Math.max(b.veil0 * (1 - e), Math.sin(Math.PI * e)));
+      if (e === 1) {
+        this.#blend = null;
+        const q = this.#queued;
+        this.#queued = null;
+        if (q) this.#toward(q.seed, q.amount);
+      }
+      return;
+    }
+    if (b.kind !== 'veil') {
       const t = Math.min(1, el / b.dur);
       const e = b.ease(t);
       this.#variants.paint(mixGenome(b.from, b.to, e));
+      smoothReflow();
       if (e >= 0.5) this.#commit();
       // A veil left up by an interrupted change lifts alongside this blend.
       this.#setVeil(b.veil0 * (1 - e));
@@ -165,8 +206,10 @@ export class Shuffler {
       this.#setVeil(b.veil0 + (1 - b.veil0) * easeInOut(inT));
       return;
     }
-    this.#commit();
+    if (b.commit && b.redecorate) crossfadeBackdrop(() => this.#commit(), b.dur);
+    else this.#commit();
     this.#variants.paint(mixGenome(b.from, b.to, easeInOut(midT)));
+    smoothReflow();
     this.#setVeil(1 - easeInOut(outT));
     if (outT === 1) this.#blend = null;
   }
@@ -194,15 +237,16 @@ export class Shuffler {
    */
   #settle() {
     const b = this.#blend;
-    // A veiled change is already a gentle out-and-in; cutting it short would
-    // leave the page hazed or skip the swap.
-    if (!b || b.veiled) return;
+    // Veils and glides are already short eased moves; cutting one short would
+    // leave the page hazed or strand a click queued behind the glide.
+    if (!b || b.kind !== 'drift') return;
     const now = performance.now();
     const remaining = Math.max(0, b.dur - (now - b.t0));
     this.#blend = {
       from: this.#variants.genome,
       to: b.to,
       commit: b.commit,
+      kind: 'drift',
       veil0: this.#veil.level,
       t0: now,
       dur: Math.max(SETTLE_MS, remaining * 2),

@@ -231,6 +231,11 @@ export function applyGenome(g) {
 // is not a font, so these switch at the midpoint instead of interpolating.
 const DISCRETE_GENES = ['fontIndex', 'displayIndex', 'displayCase'];
 
+// Genes that only repaint — colour, corners, shadow. Everything else changes
+// text size or shape, which re-lays out the page and rasterises new font
+// instances every frame it moves.
+export const PAINT_GENES = ['hue', 'accentOffset', 'saturation', 'lightness', 'contrast', 'radius', 'shadowDepth'];
+
 /**
  * A genome part-way from a to b. Hue takes the short way round the wheel so a
  * 350→10 blend passes through red rather than the whole spectrum.
