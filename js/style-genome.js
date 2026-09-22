@@ -9,6 +9,7 @@
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 const round = (n, p = 0) => Number(n.toFixed(p));
+const snap = (n, step) => round(Math.round(n / step) * step, 2);
 
 /** Mulberry32 — deterministic PRNG so a seed always yields the same design. */
 function rng(seed) {
@@ -38,7 +39,12 @@ export const FONT_STACKS = [
   "'Century Gothic', 'Apple Gothic', AppleGothic, sans-serif",
   "Baskerville, 'Baskerville Old Face', 'Times New Roman', serif",
   "Verdana, Geneva, sans-serif",
+  // Variable faces go last so existing seeds keep their indices. Their shape
+  // is set by continuous genes, so text on them morphs rather than swapping.
+  "Recursive, 'Segoe UI', system-ui, sans-serif",
 ];
+
+const MORPH_BODY = FONT_STACKS.length - 1;
 
 // Display faces can differ from body text. Pairing a heavy display with a
 // readable body is the single biggest lever on how a page reads.
@@ -47,7 +53,11 @@ export const DISPLAY_STACKS = [
   "'Arial Black', 'Arial Bold', Gadget, sans-serif",
   "'Bodoni MT', Didot, 'Didot LT STD', serif",
   "'Gill Sans', 'Gill Sans MT', Calibri, sans-serif",
+  "'Roboto Flex', 'Segoe UI', system-ui, sans-serif",
+  "Recursive, 'Segoe UI', system-ui, sans-serif",
 ];
+
+const MORPH_DISPLAY = [DISPLAY_STACKS.length - 2, DISPLAY_STACKS.length - 1];
 
 /**
  * The default site's own palette, expressed as a genome instead of hardcoded
@@ -74,13 +84,18 @@ export const DEFAULT_GENOME = {
   bodyLeading: 1.6,
   shadowDepth: 0.15,
   borderWeight: 0.2,
+  bodyWeight: 400,
+  displayWidth: 100,
+  casual: 0,
+  mono: 0,
+  slant: 0,
 };
 
 /** A genome: the small set of genes everything else derives from. */
 export function randomGenome(seed = Math.floor(Math.random() * 1e9)) {
   const r = rng(seed);
   const pick = arr => arr[Math.floor(r() * arr.length)];
-  return {
+  const g = {
     seed,
     hue: round(r() * 360),
     // Complement, triad or analogous — never an arbitrary second hue, which is
@@ -103,6 +118,18 @@ export function randomGenome(seed = Math.floor(Math.random() * 1e9)) {
     shadowDepth: round(r(), 2),
     borderWeight: round(r(), 2),
   };
+  // Drawn after the original genes so every existing seed keeps its palette
+  // and layout; only its type changes.
+  g.bodyWeight = round(340 + r() * 160);
+  g.displayWidth = round(72 + r() * 50);
+  g.casual = round(r() ** 1.5, 2);
+  g.mono = round(r() ** 2, 2);
+  g.slant = r() < 0.3 ? round(-r() * 12, 1) : 0;
+  // Variable faces are the ones that morph during a fast drift, so they're
+  // favoured over any single system stack.
+  if (r() < 0.6) g.fontIndex = MORPH_BODY;
+  if (r() < 0.6) g.displayIndex = pick(MORPH_DISPLAY);
+  return g;
 }
 
 /**
@@ -164,7 +191,15 @@ export function genomeToCSS(g, forceDark = document.body.classList.contains('dar
     '--h1-size': `clamp(${round(1.9 * g.typeScale, 2)}rem, ${round(4.4 * g.typeScale, 1)}vw, ${round(2.6 * g.typeScale ** 3, 2)}rem)`,
     '--h2-size': `clamp(${round(1.3 * g.typeScale, 2)}rem, ${round(2.6 * g.typeScale, 1)}vw, ${round(1.5 * g.typeScale ** 2, 2)}rem)`,
     '--h3-size': `${round(0.95 * g.typeScale, 2)}rem`,
-    '--display-weight': String(g.displayWeight),
+    // Each distinct axis value is a new font instance the browser has to
+    // rasterise from scratch. Snapping to steps too fine to see mid-morph lets
+    // it reuse glyphs instead of redrawing every frame.
+    '--display-weight': String(snap(g.displayWeight, 10)),
+    '--display-width': `${snap(g.displayWidth, 1)}%`,
+    '--body-weight': String(snap(g.bodyWeight, 10)),
+    '--casl': String(snap(g.casual, 0.05)),
+    '--mono': String(snap(g.mono, 0.05)),
+    '--slnt': String(snap(g.slant, 0.5)),
     '--display-tracking': `${g.displayTracking}em`,
     '--display-case': g.displayCase,
     '--body-leading': String(g.bodyLeading),
@@ -194,7 +229,7 @@ export function applyGenome(g) {
 
 // Genes that index into a list or name a keyword: halfway between two fonts
 // is not a font, so these switch at the midpoint instead of interpolating.
-const DISCRETE_GENES = ['fontIndex', 'displayIndex', 'displayWeight', 'displayCase'];
+const DISCRETE_GENES = ['fontIndex', 'displayIndex', 'displayCase'];
 
 /**
  * A genome part-way from a to b. Hue takes the short way round the wheel so a

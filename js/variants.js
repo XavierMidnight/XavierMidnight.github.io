@@ -168,17 +168,16 @@ export class Variants {
    *
    * The discrete swaps are deferred to `commit`, which the caller runs once
    * the page has faded out, so a layout jump lands unseen rather than as a
-   * hard cut. `fade` (0–1 wash
-   * toward the background) is the peak, scaled by how jarring the biggest
-   * swap in this step is.
+   * hard cut. `fade` (0–1 wash toward the background) is the peak, scaled by
+   * how jarring the biggest swap in this step is.
    */
   retarget(seed, amount) {
     const from = this.#genome ?? DEFAULT_GENOME;
     const to = mixGenome(from, randomGenome(seed), amount, amount >= 0.4);
     const restructure = amount >= 0.75;
     const redecorate = amount >= 0.25;
-    // Weight and case flips rewrap the headline as much as a new face does.
-    const refont = ['fontIndex', 'displayIndex', 'displayWeight', 'displayCase'].some(k => to[k] !== from[k]);
+    // Weight now morphs on the variable faces; a face or case flip still jumps.
+    const refont = ['fontIndex', 'displayIndex', 'displayCase'].some(k => to[k] !== from[k]);
     // Changes that move the words fade nearly out, so the swap isn't seen.
     const fade = restructure || refont ? 0.85 : redecorate ? 0.2 : 0;
     const commit = () => {

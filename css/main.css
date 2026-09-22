@@ -42,6 +42,10 @@
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 2rem); }
 body {
   font-family: var(--font);
+  font-weight: var(--body-weight, 400);
+  /* Axes a face doesn't have are ignored, so these only shape the variable
+     faces and every system stack renders as before. */
+  font-variation-settings: "CASL" var(--casl, 0), "MONO" var(--mono, 0), "slnt" var(--slnt, 0);
   background: var(--bg);
   color: var(--text);
   line-height: var(--body-leading, 1.75);
@@ -85,6 +89,7 @@ h1, h2, h3 {
   line-height: 1.12;
   letter-spacing: var(--display-tracking, -0.03em);
   text-transform: var(--display-case, none);
+  font-stretch: var(--display-width, 100%);
   color: var(--text);
 }
 h1 { font-size: var(--h1-size, clamp(2.8rem, 7vw, 5.5rem)); }
