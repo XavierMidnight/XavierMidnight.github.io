@@ -162,9 +162,10 @@ export class Variants {
    * Begin a partial step toward a seed's design and return the genome blend
    * the caller should animate across.
    *
-   * `amount` is how far toward the seed to go (0–1). The discrete layers only
-   * change past a threshold, so small steps drift colour and proportion while
-   * the words stay where they are, and only big steps rearrange the page.
+   * `t` is how far toward the seed to go (0–1), and `size` how big a step
+   * this is. The discrete layers only change past a step-size threshold, so
+   * small steps drift colour and proportion while the words stay where they
+   * are, and only big steps rearrange the page.
    *
    * The discrete swaps are deferred to `commit`, which the caller runs inside
    * a glide or under a fade depending on `kind`:
@@ -174,11 +175,11 @@ export class Variants {
    *  - 'drift': nothing discrete changed — a plain blend
    * `fade` (0–1 wash toward the background) is the peak for that kind.
    */
-  retarget(seed, amount) {
+  retarget(seed, t, size = t) {
     const from = this.#genome ?? DEFAULT_GENOME;
-    const to = mixGenome(from, randomGenome(seed), amount, amount >= 0.4);
-    const restructure = amount >= 0.75;
-    const redecorate = amount >= 0.25;
+    const to = mixGenome(from, randomGenome(seed), t, size >= 0.4);
+    const restructure = size >= 0.75;
+    const redecorate = size >= 0.25;
     // Weight now morphs on the variable faces; a face or case flip still jumps.
     const refont = ['fontIndex', 'displayIndex', 'displayCase'].some(k => to[k] !== from[k]);
     const kind = restructure || refont ? 'glide' : redecorate ? 'veil' : 'drift';

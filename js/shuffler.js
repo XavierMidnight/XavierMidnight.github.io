@@ -49,6 +49,9 @@ export class Shuffler {
   #blend = null;
   // A change asked for while a glide is still moving waits for it to land.
   #queued = null;
+  // The design the timer's partial steps are heading for, and how much of
+  // the way there they've covered (0–1).
+  #journey = null;
   // Peak fade of the last veiled change, and how far in the veil is now.
   #veil = { fade: 0, level: 0 };
   #variants;
@@ -98,6 +101,16 @@ export class Shuffler {
 
   /** A button press always goes all the way; only the timer takes partial steps. */
   next(amount = 1) {
+    // Partial steps all head for one design until they reach it. A fresh
+    // target every step averaged the page into the middle of every range —
+    // muted colour, middling sizes — and faster steps averaged it harder.
+    const j = this.#journey;
+    if (amount < 1 && j && j.done < 1 && j.seed === this.#history[this.#index]) {
+      const t = Math.min(1, amount / (1 - j.done));
+      j.done = t === 1 ? 1 : j.done + amount;
+      this.#toward(j.seed, t, amount);
+      return;
+    }
     // Stepping forward from mid-history replays what was already seen, so the
     // bar's "next" preview is truthful rather than a fresh roll each time.
     if (this.#index < this.#history.length - 1) {
@@ -108,7 +121,9 @@ export class Shuffler {
       if (this.#history.length > 40) this.#history.shift();
       this.#index = this.#history.length - 1;
     }
-    this.#toward(this.#history[this.#index], amount);
+    const seed = this.#history[this.#index];
+    this.#journey = amount < 1 ? { seed, done: amount } : null;
+    this.#toward(seed, amount);
   }
 
   prev() {
@@ -117,12 +132,17 @@ export class Shuffler {
     this.#toward(this.#history[this.#index], 1);
   }
 
-  #toward(seed, amount) {
+  /**
+   * Blend `t` of the remaining way to a seed's design. `size` is how big a
+   * step this is on the journey there — the last step of a journey covers
+   * all that's left, but it's still a small step and must not reshuffle.
+   */
+  #toward(seed, t, size = t) {
     // Starting a glide over a running one re-measures text mid-flight and
     // ghosts the ghosts; clicking through quickly lands on the design the
     // label now shows once the current one settles.
     if (this.#blend?.kind === 'glide') {
-      this.#queued = { seed, amount };
+      this.#queued = { seed, t, size };
       this.#elapsed = 0;
       this.#render();
       return;
@@ -130,8 +150,8 @@ export class Shuffler {
     // A blend cut off before its midpoint still owes its layout swap, or the
     // page would keep the old structure under the new palette.
     this.#commit();
-    const { from, to, fade, kind, redecorate, commit } = this.#variants.retarget(seed, amount);
-    const continuous = amount < 1 && this.#period < FULL_BLEND_MS;
+    const { from, to, fade, kind, redecorate, commit } = this.#variants.retarget(seed, t, size);
+    const continuous = size < 1 && this.#period < FULL_BLEND_MS;
     if (kind !== 'drift') this.#veil = { fade, level: this.#veil.level };
     this.#blend = {
       from, to, commit, kind, redecorate,
@@ -184,7 +204,7 @@ export class Shuffler {
         this.#blend = null;
         const q = this.#queued;
         this.#queued = null;
-        if (q) this.#toward(q.seed, q.amount);
+        if (q) this.#toward(q.seed, q.t, q.size);
       }
       return;
     }
