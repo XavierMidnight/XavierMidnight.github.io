@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ready for Dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1>Ready for Dev</h1>
+    <p>An idle game about the jira-webhook pipeline</p>
+  </div>
+
+  <dl class="stats">
+    <div class="stat stat-main"><dt>Commits</dt><dd id="commits">0</dd></div>
+    <div class="stat"><dt>Per second</dt><dd id="rate">0</dd></div>
+    <div class="stat"><dt>Tickets merged</dt><dd id="merged">0</dd></div>
+    <div class="stat"><dt>Each ticket pays</dt><dd id="value">1</dd></div>
+  </dl>
+
+  <div class="dial">
+    <div class="dial-label">Mode dial</div>
+    <div class="dial-row" id="dial" role="group" aria-label="Mode dial"></div>
+    <p class="dial-note" id="dialNote"></p>
+  </div>
+</header>
+
+<main>
+  <section class="board" id="board" aria-label="Pipeline board"></section>
+
+  <section class="panels">
+    <div class="panel">
+      <h2>Needs You <span class="count" id="holdCount"></span></h2>
+      <div id="holds" class="holds"></div>
+      <h2 class="h-gap">server.log</h2>
+      <div id="log" class="log" aria-live="off"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Ticket sources</h2>
+      <div id="shopSources" class="shop"></div>
+      <h2 class="h-gap">Automation</h2>
+      <div id="shopAuto" class="shop"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Pipeline features <span class="count" id="featCount"></span></h2>
+      <div id="shopFeats" class="shop"></div>
+      <p class="empty" id="featsDone" hidden>Every feature is merged.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Repos <span class="count" id="repoCount"></span></h2>
+      <div id="shopRepos" class="shop"></div>
+      <p class="repo-list" id="repoList"></p>
+      <h2 class="h-gap">Stable build</h2>
+      <p class="note" id="stableNote"></p>
+      <button class="plain" id="stableBtn">Cut a stable build</button>
+      <div class="foot">
+        <button class="plain quiet" id="wipeBtn">Wipe save</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="game.js"></script>
+</body>
+</html>
